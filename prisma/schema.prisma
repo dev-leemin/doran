@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──── NextAuth 인증 ────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  testResults   TestResult[]
+  createdAt     DateTime  @default(now())
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ──── 테스트 결과 저장 ────
+
+model TestResult {
+  id         String   @id @default(cuid())
+  userId     String
+  testId     String   // office | lunch | compatibility
+  resultType String   // 결과 유형 코드
+  scores     Json
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ──── 테스트 참여 통계 ────
+
+model TestStat {
+  testId    String   @id         // office | lunch | compatibility
+  playCount Int      @default(0) // 누적 참여 횟수
+  updatedAt DateTime @updatedAt
+}
+
+// ──── 방 (그룹 세션) ────
+
+model Room {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  name          String        @default("")     // 방 이름
+  testId        String        // 테스트 종류 (office | lunch | compatibility)
+  password      String        @default("0000") @db.VarChar(4)  // 방 삭제용 비밀번호 (4글자)
+  questionCount Int           @default(10)    // 선택된 문항 수
+  questionIds   Json          @default("[]")  // 선택된 문항 ID 배열 (예: [3, 7, 1, ...])
+  createdAt     DateTime      @default(now())
+  participants  Participant[]
+}
+
+model Participant {
+  id         String   @id @default(cuid())
+  roomId     String
+  nickname   String
+  scores     Json
+  resultType String
+  createdAt  DateTime @default(now())
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, nickname])
+}
+
+// ──── 리뷰 ────
+
+model Review {
+  id        String   @id @default(cuid())
+  testId    String
+  nickname  String
+  content   String   @db.Text
+  rating    Int      @default(5)  // 1-5
+  createdAt DateTime @default(now())
+
+  @@index([testId])
+}
+
+// ──── 좋아요 / 싫어요 ────
+
+model TestReaction {
+  id        String   @id @default(cuid())
+  testId    String
+  type      String   // 'like' | 'dislike'
+  sessionId String   // 브라우저 세션 (중복 방지)
+  createdAt DateTime @default(now())
+
+  @@unique([testId, sessionId, type])
+  @@index([testId])
+}
