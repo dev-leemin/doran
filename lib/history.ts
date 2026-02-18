@@ -27,11 +27,11 @@ export interface SavedRoom {
 }
 
 function today(): string {
-  return new Date().toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).replace(/\. /g, '.').replace('.', '')
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}.${m}.${day}`
 }
 
 /** 테스트 결과 저장 (같은 테스트는 최신으로 덮어쓰기) */

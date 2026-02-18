@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { getTest, getResult } from '@/lib/tests'
+import { getTest, getResult, testList } from '@/lib/tests'
 import { calculateCompatibility } from '@/lib/compatibility'
 import type { RoomData, ParticipantData } from '@/lib/types/room'
 import { Settings, X, Link2, Share2, UserMinus, Trash2, RefreshCw, Users, ChevronRight } from 'lucide-react'
@@ -862,33 +862,86 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
         </div>
       )}
 
-      {/* ═══ 10. 대기 중 (참가자 0명) ═══ */}
-      {participants.length === 0 && (
-        <div className="text-center py-8 mb-6 animate-fade-up delay-100">
-          <p className="text-3xl mb-3 animate-float">⏳</p>
-          <p className="font-bold mb-1">참가자를 기다리고 있어요</p>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>링크를 공유해서 친구를 초대하세요</p>
+      {/* ═══ 10. 초대 카드 (0~1명일 때) ═══ */}
+      {participants.length <= 1 && (
+        <div className="mb-6 animate-fade-up delay-100">
+          <div
+            className="relative rounded-2xl p-6 overflow-hidden"
+            style={{
+              background: `linear-gradient(145deg, ${test.color}08, ${test.color}18)`,
+              border: `1px solid ${test.color}20`,
+            }}
+          >
+            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-[0.08]" style={{ background: `radial-gradient(circle, ${test.color}, transparent 70%)` }} />
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${test.color}15` }}>
+                  <Users size={18} style={{ color: test.color }} />
+                </div>
+                <div>
+                  <p className="font-bold text-sm">
+                    {participants.length === 0 ? '아직 아무도 없어요' : '친구가 더 필요해요!'}
+                  </p>
+                  <p className="text-[11px]" style={{ color: 'var(--muted)' }}>
+                    {participants.length === 0
+                      ? '링크를 공유해서 친구를 초대해보세요'
+                      : '2명 이상이면 궁합 분석이 시작돼요'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(window.location.href)
+                  alert('링크가 복사되었어요!')
+                }}
+                className="w-full py-3 rounded-xl text-xs font-bold text-white btn-bounce flex items-center justify-center gap-2"
+                style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)`, boxShadow: `0 4px 15px ${test.color}20` }}
+              >
+                <Link2 size={14} />
+                초대 링크 복사하기
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* 1명뿐일 때 */}
-      {participants.length === 1 && (
-        <div className="text-center py-6 mb-6 animate-fade-up delay-100">
-          <p className="text-3xl mb-3">👋</p>
-          <p className="font-bold mb-1">친구를 초대해보세요!</p>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>2명 이상이면 궁합 분석이 시작돼요</p>
+      {/* ═══ 11. 다른 테스트 해보기 ═══ */}
+      <div className="mb-6 animate-fade-up delay-300">
+        <p className="text-sm font-bold mb-3">다른 테스트도 해보세요</p>
+        <div className="space-y-2.5">
+          {testList.filter(t => t.id !== room.testId).map(t => (
+            <Link
+              key={t.id}
+              href={`/quiz/${t.id}`}
+              className="flex items-center gap-3 p-3.5 rounded-2xl transition-all duration-200 btn-bounce"
+              style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+            >
+              {t.icon ? (
+                <img src={t.icon} alt={t.title} className="w-11 h-11 rounded-xl object-contain" style={{ background: `${t.color}10` }} />
+              ) : (
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style={{ background: `${t.color}10` }}>
+                  {t.emoji}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold">{t.title}</p>
+                <p className="text-[11px] truncate" style={{ color: 'var(--muted)' }}>{t.description}</p>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--muted)' }} />
+            </Link>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* ═══ 액션 버튼 ═══ */}
-      <div className="space-y-3 animate-fade-up delay-300">
+      <div className="space-y-2.5 animate-fade-up delay-300">
         <button onClick={fetchRoom} className="w-full py-3.5 rounded-2xl font-medium text-sm btn-bounce flex items-center justify-center gap-2"
           style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <RefreshCw size={14} />
           새로고침
         </button>
         <Link href="/" className="block w-full py-3.5 rounded-2xl text-center text-sm" style={{ color: 'var(--muted)' }}>
-          홈으로 →
+          홈으로
         </Link>
       </div>
     </div>
