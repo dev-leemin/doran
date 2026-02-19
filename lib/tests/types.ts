@@ -36,6 +36,7 @@ export interface ResultType {
   id: string
   title: string
   emoji: string
+  icon?: string       // 커스텀 아이콘 이미지 경로 (예: '/icons/office-clock-out.png')
   subtitle: string
   description: string
   tags: string[]

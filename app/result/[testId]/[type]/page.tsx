@@ -145,9 +145,9 @@ export default function ResultPage({
           />
 
           <div className="relative">
-            {/* 타입 아이콘 */}
-            {test.icon ? (
-              <img src={test.icon} alt={test.title} className="w-20 h-20 rounded-3xl mx-auto mb-4 object-contain" style={{ background: `${result.color}15` }} />
+            {/* 결과 유형 아이콘 */}
+            {result.icon ? (
+              <img src={result.icon} alt={result.title} className="w-20 h-20 rounded-3xl mx-auto mb-4 object-contain" style={{ background: `${result.color}15` }} />
             ) : (
               <div
                 className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4"

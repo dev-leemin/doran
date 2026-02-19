@@ -565,14 +565,14 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                   style={{ opacity: selectedPerson && !isSelected ? 0.5 : 1 }}
                 >
                   <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-all duration-200"
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-all duration-200 overflow-hidden"
                     style={{
                       background: isSelected ? `${result.color}25` : `${result.color}12`,
                       border: isSelected ? `2px solid ${result.color}` : isMe ? `2px solid ${result.color}50` : '2px solid transparent',
                       transform: isSelected ? 'scale(1.1)' : 'scale(1)',
                     }}
                   >
-                    {result.emoji}
+                    {result.icon ? <img src={result.icon} alt={result.title} className="w-full h-full object-contain" /> : result.emoji}
                   </div>
                   <span className="text-[10px] font-bold whitespace-nowrap">
                     {p.nickname}
@@ -594,8 +594,8 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             style={{ background: `${focusResult.color}06`, border: `1px solid ${focusResult.color}20` }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ background: `${focusResult.color}15` }}>
-                {focusResult.emoji}
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl overflow-hidden" style={{ background: `${focusResult.color}15` }}>
+                {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-full h-full object-contain" /> : focusResult.emoji}
               </div>
               <div className="flex-1">
                 <p className="font-bold text-sm">{focusPerson.nickname}의 궁합</p>
@@ -677,7 +677,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-3">
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-3xl">{rA?.emoji}</span>
+                    {rA?.icon ? <img src={rA.icon} alt={rA.title} className="w-12 h-12 rounded-xl object-contain" style={{ background: `${rA.color}12` }} /> : <span className="text-3xl">{rA?.emoji}</span>}
                     <span className="text-xs font-bold">{bestPair.a}</span>
                     <span className="text-[9px]" style={{ color: 'var(--muted)' }}>{rA?.title}</span>
                   </div>
@@ -686,7 +686,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     <span className="text-[10px] font-medium" style={{ color: '#f59e0b' }}>{desc.label}</span>
                   </div>
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-3xl">{rB?.emoji}</span>
+                    {rB?.icon ? <img src={rB.icon} alt={rB.title} className="w-12 h-12 rounded-xl object-contain" style={{ background: `${rB.color}12` }} /> : <span className="text-3xl">{rB?.emoji}</span>}
                     <span className="text-xs font-bold">{bestPair.b}</span>
                     <span className="text-[9px]" style={{ color: 'var(--muted)' }}>{rB?.title}</span>
                   </div>
@@ -716,7 +716,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-3">
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-3xl">{rA?.emoji}</span>
+                    {rA?.icon ? <img src={rA.icon} alt={rA.title} className="w-12 h-12 rounded-xl object-contain" style={{ background: `${rA.color}12` }} /> : <span className="text-3xl">{rA?.emoji}</span>}
                     <span className="text-xs font-bold">{worstPair.a}</span>
                     <span className="text-[9px]" style={{ color: 'var(--muted)' }}>{rA?.title}</span>
                   </div>
@@ -725,7 +725,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     <span className="text-[10px] font-medium" style={{ color: '#ef4444' }}>{desc.label}</span>
                   </div>
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-3xl">{rB?.emoji}</span>
+                    {rB?.icon ? <img src={rB.icon} alt={rB.title} className="w-12 h-12 rounded-xl object-contain" style={{ background: `${rB.color}12` }} /> : <span className="text-3xl">{rB?.emoji}</span>}
                     <span className="text-xs font-bold">{worstPair.b}</span>
                     <span className="text-[9px]" style={{ color: 'var(--muted)' }}>{rB?.title}</span>
                   </div>
