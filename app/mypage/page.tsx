@@ -171,10 +171,10 @@ export default function MyPage() {
                   style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
                 >
                   <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+                    className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0 overflow-hidden"
                     style={{ background: `${result.color}12` }}
                   >
-                    {result.emoji}
+                    {result.icon ? <img src={result.icon} alt={result.title} className="w-full h-full object-contain" /> : result.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs" style={{ color: 'var(--muted)' }}>

@@ -245,7 +245,7 @@ export default function Home() {
                         e.currentTarget.style.background = 'var(--card)'
                       }}
                     >
-                      <span className="text-2xl shrink-0">{res.emoji}</span>
+                      {res.icon ? <img src={res.icon} alt={res.title} className="w-9 h-9 rounded-lg object-contain shrink-0" style={{ background: `${res.color}10` }} /> : <span className="text-2xl shrink-0">{res.emoji}</span>}
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold truncate">{res.title}</p>
                         <p className="text-[10px] truncate" style={{ color: 'var(--muted)' }}>

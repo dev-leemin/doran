@@ -443,7 +443,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                         const result = getResult(room.testId, p.resultType)
                         return (
                           <div key={p.nickname} className="flex items-center gap-2.5 p-2.5 rounded-xl" style={{ background: 'var(--bg)' }}>
-                            <span className="text-lg shrink-0">{result?.emoji}</span>
+                            {result?.icon ? <img src={result.icon} alt={result.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${result.color}10` }} /> : <span className="text-lg shrink-0">{result?.emoji}</span>}
                             <div className="flex-1 min-w-0">
                               <span className="text-xs font-bold truncate block">{p.nickname}</span>
                               <span className="text-[10px]" style={{ color: 'var(--muted)' }}>{result?.title}</span>
@@ -621,13 +621,13 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                   <div key={other.nickname} className="rounded-xl p-3.5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
                     {/* 상단: 이모지 + 이름 + 점수 */}
                     <div className="flex items-center gap-2.5 mb-2.5">
-                      <span className="text-xl">{focusResult.emoji}</span>
+                      {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${focusResult.color}10` }} /> : <span className="text-xl">{focusResult.emoji}</span>}
                       <div className="flex-1">
                         <div className="h-2 rounded-full overflow-hidden" style={{ background: `${desc.color}15` }}>
                           <div className="h-full rounded-full" style={{ width: `${score}%`, background: `linear-gradient(90deg, ${desc.color}80, ${desc.color})`, transition: 'width 0.8s ease' }} />
                         </div>
                       </div>
-                      <span className="text-xl">{otherResult.emoji}</span>
+                      {otherResult.icon ? <img src={otherResult.icon} alt={otherResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${otherResult.color}10` }} /> : <span className="text-xl">{otherResult.emoji}</span>}
                     </div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1.5">
@@ -762,7 +762,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     style={{ background: isMe ? `${result.color}06` : 'transparent' }}
                   >
                     <span className="text-base w-7 text-center shrink-0">{medal}</span>
-                    <span className="text-xl shrink-0">{result.emoji}</span>
+                    {result.icon ? <img src={result.icon} alt={result.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${result.color}10` }} /> : <span className="text-xl shrink-0">{result.emoji}</span>}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold truncate">{item.nickname}</span>
@@ -802,7 +802,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                   <div key={typeId} className="flex flex-col items-center gap-1" style={{ width: `${Math.max(40, 100 / Object.keys(typeDist).length)}px` }}>
                     <span className="text-[10px] font-bold" style={{ color: result.color }}>{count}명</span>
                     <div className="w-full rounded-t-lg" style={{ height: barH, background: `linear-gradient(to top, ${result.color}40, ${result.color})` }} />
-                    <span className="text-lg">{result.emoji}</span>
+                    {result.icon ? <img src={result.icon} alt={result.title} className="w-7 h-7 rounded object-contain" /> : <span className="text-lg">{result.emoji}</span>}
                     <span className="text-[9px] font-medium text-center leading-tight" style={{ color: 'var(--muted)' }}>{result.title}</span>
                   </div>
                 )
@@ -831,7 +831,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     const r = getResult(room.testId, p.resultType)
                     return (
                       <th key={p.nickname} className="p-1.5 text-center">
-                        <span className="text-base block">{r?.emoji}</span>
+                        {r?.icon ? <img src={r.icon} alt={r.title} className="w-7 h-7 mx-auto rounded object-contain" /> : <span className="text-base block">{r?.emoji}</span>}
                         <span className="text-[9px] font-medium block" style={{ color: 'var(--muted)' }}>{p.nickname}</span>
                       </th>
                     )
