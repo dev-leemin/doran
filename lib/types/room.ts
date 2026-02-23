@@ -13,6 +13,13 @@ export interface ParticipantData {
   joinedAt: number
 }
 
+/** 방 리액션 데이터 */
+export interface ReactionData {
+  fromNick: string
+  toNick: string
+  type: string
+}
+
 /** 방 데이터 (API 응답 형태) */
 export interface RoomData {
   code: string
@@ -20,6 +27,8 @@ export interface RoomData {
   testId: string
   questionCount: number      // 선택된 문항 수
   questionIds: number[]      // 선택된 문항 ID 배열
+  locked: boolean            // 방 잠금 여부
   createdAt: number
   participants: ParticipantData[]
+  reactions: ReactionData[]
 }

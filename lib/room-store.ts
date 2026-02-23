@@ -36,12 +36,18 @@ function toRoomData(room: {
   testId: string
   questionCount: number
   questionIds: unknown
+  locked: boolean
   createdAt: Date
   participants: {
     nickname: string
     scores: unknown
     resultType: string
     createdAt: Date
+  }[]
+  reactions?: {
+    fromNick: string
+    toNick: string
+    type: string
   }[]
 }): RoomData {
   return {
@@ -50,12 +56,18 @@ function toRoomData(room: {
     testId: room.testId,
     questionCount: room.questionCount,
     questionIds: (room.questionIds as number[]) ?? [],
+    locked: room.locked,
     createdAt: room.createdAt.getTime(),
     participants: room.participants.map(p => ({
       nickname: p.nickname,
       scores: p.scores as Record<string, number>,
       resultType: p.resultType,
       joinedAt: p.createdAt.getTime(),
+    })),
+    reactions: (room.reactions || []).map(r => ({
+      fromNick: r.fromNick,
+      toNick: r.toNick,
+      type: r.type,
     })),
   }
 }
@@ -107,6 +119,7 @@ export async function getRoom(code: string): Promise<RoomData | null> {
       participants: {
         orderBy: { createdAt: 'asc' },
       },
+      reactions: true,
     },
   })
 
@@ -129,6 +142,14 @@ export async function joinRoom(
     where: { code: code.toUpperCase() },
   })
   if (!room) return null
+
+  // 잠금된 방인 경우 기존 참가자만 업데이트 허용
+  if (room.locked) {
+    const existing = await prisma.participant.findUnique({
+      where: { roomId_nickname: { roomId: room.id, nickname } },
+    })
+    if (!existing) return null // 잠금된 방에 새로운 참가자 불가
+  }
 
   // 참가자 추가 또는 업데이트 (같은 닉네임이면 덮어쓰기)
   await prisma.participant.upsert({
@@ -240,4 +261,60 @@ export async function deleteRoom(
   })
 
   return 'success'
+}
+
+/* ────────────────────────────────────────────
+ * 방 잠금/해제 토글 (비밀번호 검증 후)
+ * ──────────────────────────────────────────── */
+export async function toggleRoomLock(
+  code: string,
+  password: string,
+): Promise<{ result: 'success' | 'not_found' | 'wrong_password'; locked?: boolean }> {
+  const room = await prisma.room.findUnique({
+    where: { code: code.toUpperCase() },
+  })
+  if (!room) return { result: 'not_found' }
+  if (room.password !== password) return { result: 'wrong_password' }
+
+  const updated = await prisma.room.update({
+    where: { id: room.id },
+    data: { locked: !room.locked },
+  })
+  return { result: 'success', locked: updated.locked }
+}
+
+/* ────────────────────────────────────────────
+ * 리액션 토글 (이미 있으면 삭제, 없으면 추가)
+ * ──────────────────────────────────────────── */
+export async function toggleReaction(
+  code: string,
+  fromNick: string,
+  toNick: string,
+  type: string,
+): Promise<'added' | 'removed' | 'not_found'> {
+  const room = await prisma.room.findUnique({
+    where: { code: code.toUpperCase() },
+  })
+  if (!room) return 'not_found'
+
+  const existing = await prisma.roomReaction.findUnique({
+    where: {
+      roomId_fromNick_toNick_type: {
+        roomId: room.id,
+        fromNick,
+        toNick,
+        type,
+      },
+    },
+  })
+
+  if (existing) {
+    await prisma.roomReaction.delete({ where: { id: existing.id } })
+    return 'removed'
+  } else {
+    await prisma.roomReaction.create({
+      data: { roomId: room.id, fromNick, toNick, type },
+    })
+    return 'added'
+  }
 }

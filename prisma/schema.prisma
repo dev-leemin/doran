@@ -86,8 +86,10 @@ model Room {
   password      String        @default("0000") @db.VarChar(4)  // 방 삭제용 비밀번호 (4글자)
   questionCount Int           @default(10)    // 선택된 문항 수
   questionIds   Json          @default("[]")  // 선택된 문항 ID 배열 (예: [3, 7, 1, ...])
+  locked        Boolean       @default(false) // 방 잠금 (참여 차단)
   createdAt     DateTime      @default(now())
   participants  Participant[]
+  reactions     RoomReaction[]
 }
 
 model Participant {
@@ -100,6 +102,34 @@ model Participant {
   room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@unique([roomId, nickname])
+}
+
+// ──── 방 리액션 ────
+
+model RoomReaction {
+  id        String   @id @default(cuid())
+  roomId    String
+  fromNick  String   // 리액션 보낸 사람
+  toNick    String   // 리액션 받은 사람
+  type      String   // 리액션 종류 (laugh, surprise, agree, fire)
+  createdAt DateTime @default(now())
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, fromNick, toNick, type])
+  @@index([roomId])
+}
+
+// ──── 결과 유형별 통계 ────
+
+model ResultTypeStat {
+  id         String   @id @default(cuid())
+  testId     String
+  resultType String
+  count      Int      @default(0)
+  updatedAt  DateTime @updatedAt
+
+  @@unique([testId, resultType])
+  @@index([testId])
 }
 
 // ──── 리뷰 ────

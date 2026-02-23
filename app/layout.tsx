@@ -6,13 +6,28 @@ import HeaderAuth from "@/components/header-auth";
 import HeaderMenu from "@/components/header-menu";
 import HeaderSearch from "@/components/header-search";
 import BackButton from "@/components/back-button";
+import ThemeToggle from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://doran-orcin.vercel.app"),
   title: "도란도란, 서로를 알아가는 테스트",
   description: "회사 캐릭터, 점심 매칭, 취향 궁합까지. 혼자도 좋고 같이하면 더 좋은 테스트 모음",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
+  },
+  openGraph: {
+    title: "도란도란",
+    description: "서로를 알아가는 재미있는 테스트 모음. 결과를 공유하고 친구와 궁합을 비교해보세요!",
+    images: ["/logo.png"],
+    type: "website",
+    siteName: "도란도란",
+  },
+  twitter: {
+    card: "summary",
+    title: "도란도란, 서로를 알아가는 테스트",
+    description: "회사 캐릭터, 점심 매칭, 취향 궁합까지",
+    images: ["/logo.png"],
   },
 };
 
@@ -34,7 +49,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-dvh">
-        <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('contextmenu',function(e){e.preventDefault()});document.addEventListener('dragstart',function(e){e.preventDefault()});` }} />
+        <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('contextmenu',function(e){e.preventDefault()});document.addEventListener('dragstart',function(e){e.preventDefault()});try{if(localStorage.getItem('doran_theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}` }} />
         <SessionProvider>
           {/* 배경 데코 */}
           <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -67,6 +82,7 @@ export default function RootLayout({
               </Link>
               {/* 오른쪽: 검색 + 유저 아이콘 */}
               <div className="flex justify-end gap-1">
+                <ThemeToggle />
                 <HeaderSearch />
                 <HeaderAuth />
               </div>

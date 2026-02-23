@@ -21,6 +21,39 @@
   --danger: #ef4444;
 }
 
+/* 다크 모드 */
+[data-theme="dark"] {
+  --bg: #13111c;
+  --fg: #e8e6f0;
+  --sky-50: #1e1a2e;
+  --sky-100: #2a2540;
+  --sky-200: #3d3560;
+  --sky-300: #6a5aad;
+  --sky-400: #8672ea;
+  --sky-500: #9d8bf0;
+  --sky-600: #b4a6f5;
+  --accent: #6bb4e0;
+  --muted: #9590b0;
+  --card: #1c1928;
+  --card-hover: #221f30;
+  --border: #2e2a40;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+[data-theme="dark"] .glass {
+  background: rgba(19, 17, 28, 0.8);
+  border-bottom-color: rgba(46, 42, 64, 0.6);
+}
+
+[data-theme="dark"] .gradient-text {
+  background: linear-gradient(135deg, #6bb4e0, #9d8bf0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--fg);

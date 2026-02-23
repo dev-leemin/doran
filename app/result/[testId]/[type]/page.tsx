@@ -1,12 +1,13 @@
 'use client'
 
-import { use, useMemo, useState, useEffect } from 'react'
+import { use, useMemo, useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { getTest, getResult } from '@/lib/tests'
 import { saveTestResult, saveRoomParticipation } from '@/lib/history'
-import { Share2, Link2, Users } from 'lucide-react'
+import { Share2, Link2, Users, Download, Camera } from 'lucide-react'
+import html2canvas from 'html2canvas'
 
 export default function ResultPage({
   params,
@@ -24,6 +25,11 @@ export default function ResultPage({
   const [nickname, setNickname] = useState(session?.user?.name || '')
   const [joining, setJoining] = useState(false)
   const [showGroup, setShowGroup] = useState(false)
+
+  // 결과 카드 ref + 희귀도
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [rarity, setRarity] = useState<{ percentage: number; total: number } | null>(null)
+  const [saving, setSaving] = useState(false)
 
   // 리뷰 작성
   const [reviewNickname, setReviewNickname] = useState('')
@@ -54,6 +60,30 @@ export default function ResultPage({
       saveTestResult(testId, type, scores)
     }
   }, [testId, type, scores])
+
+  // 결과 통계 조회 + 카운트 증가
+  useEffect(() => {
+    if (!testId || !type) return
+    // 카운트 증가 (세션당 1회)
+    const statKey = `doran_stat_${testId}_${type}`
+    if (!sessionStorage.getItem(statKey)) {
+      fetch('/api/result-stats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ testId, resultType: type }),
+      }).catch(() => {})
+      sessionStorage.setItem(statKey, '1')
+    }
+    // 통계 조회
+    fetch(`/api/result-stats?testId=${testId}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.distribution?.[type]) {
+          setRarity({ percentage: data.distribution[type].percentage, total: data.total })
+        }
+      })
+      .catch(() => {})
+  }, [testId, type])
 
   if (!test || !result) {
     return (
@@ -108,6 +138,23 @@ export default function ResultPage({
     alert('링크가 복사되었어요!')
   }
 
+  const handleSaveImage = async () => {
+    if (!cardRef.current) return
+    setSaving(true)
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+      })
+      const link = document.createElement('a')
+      link.download = `도란_${result?.title || 'result'}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    } catch { alert('이미지 저장에 실패했어요') }
+    setSaving(false)
+  }
+
   const axisLabels: Record<string, string> = {
     efficiency: '효율',
     social: '소셜',
@@ -128,6 +175,7 @@ export default function ResultPage({
       {/* 결과 카드 */}
       <div className="animate-scale-in">
         <div
+          ref={cardRef}
           className="rounded-3xl p-6 text-center relative overflow-hidden"
           style={{
             background: `linear-gradient(145deg, ${result.color}10, ${result.color}05)`,
@@ -184,6 +232,19 @@ export default function ResultPage({
               ))}
             </div>
 
+            {/* 희귀도 */}
+            {rarity && (
+              <div className="mb-4">
+                <span
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold"
+                  style={{ background: `${result.color}15`, color: result.color }}
+                >
+                  {rarity.percentage <= 10 ? 'SSR' : rarity.percentage <= 25 ? 'SR' : rarity.percentage <= 50 ? 'R' : 'N'}
+                  {' '}{rarity.percentage}% ({rarity.total}명 중)
+                </span>
+              </div>
+            )}
+
             {/* 설명 */}
             <p className="text-sm leading-relaxed" style={{ color: 'var(--fg)', opacity: 0.8 }}>
               {result.description}
@@ -230,26 +291,28 @@ export default function ResultPage({
       )}
 
       {/* 공유 버튼 */}
-      <div className="mt-6 grid grid-cols-2 gap-3 animate-fade-up delay-300">
+      <div className="mt-6 grid grid-cols-3 gap-2 animate-fade-up delay-300">
+        <button
+          onClick={handleSaveImage}
+          disabled={saving}
+          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-xs transition-all btn-bounce"
+          style={{ background: 'var(--card)', border: '1px solid var(--border)', opacity: saving ? 0.6 : 1 }}
+        >
+          <Camera size={16} />
+          {saving ? '저장중...' : '이미지 저장'}
+        </button>
         <button
           onClick={handleCopyLink}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all btn-bounce"
-          style={{
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-            color: 'var(--fg)',
-          }}
+          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-xs transition-all btn-bounce"
+          style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
         >
           <Link2 size={16} />
           링크 복사
         </button>
         <button
           onClick={handleShare}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl text-white font-bold text-sm transition-all btn-bounce"
-          style={{
-            background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)`,
-            boxShadow: `0 4px 15px ${result.color}25`,
-          }}
+          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl text-white font-bold text-xs transition-all btn-bounce"
+          style={{ background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)` }}
         >
           <Share2 size={16} />
           공유하기

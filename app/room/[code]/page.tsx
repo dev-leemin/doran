@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { getTest, getResult, testList } from '@/lib/tests'
 import { calculateCompatibility } from '@/lib/compatibility'
 import type { RoomData, ParticipantData } from '@/lib/types/room'
-import { Settings, X, Link2, Share2, UserMinus, Trash2, RefreshCw, Users, ChevronRight } from 'lucide-react'
+import { Settings, X, Link2, Share2, UserMinus, Trash2, RefreshCw, Users, ChevronRight, Lock, Unlock, RotateCcw } from 'lucide-react'
+import QRCode from 'qrcode'
 
 /* ── 궁합 점수 → 설명 매핑 ── */
 function getCompatDescription(score: number) {
@@ -86,10 +87,21 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
   const [editName, setEditName] = useState('')
   const [renaming, setRenaming] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
+  const [qrUrl, setQrUrl] = useState<string | null>(null)
+  const [showQR, setShowQR] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(`doran_room_${code}`)
     if (saved) setMyNickname(saved)
+  }, [code])
+
+  // QR 코드 생성
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      QRCode.toDataURL(window.location.href, { width: 200, margin: 2, color: { dark: '#1e1a3a', light: '#ffffff' } })
+        .then(url => setQrUrl(url))
+        .catch(() => {})
+    }
   }, [code])
 
   const fetchRoom = useCallback(async () => {
@@ -186,6 +198,34 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
       alert('방이 삭제되었어요')
       router.push('/')
     } catch { alert('오류가 발생했습니다') }
+  }
+
+  /* ── 방 잠금/해제 ── */
+  const handleToggleLock = async () => {
+    try {
+      const res = await fetch('/api/room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'lock', code, password: adminPassword }),
+      })
+      const data = await res.json()
+      if (data.error) { alert(data.error); return }
+      await fetchRoom()
+      alert(data.locked ? '방이 잠금되었어요. 새로운 참여가 차단됩니다.' : '방 잠금이 해제되었어요.')
+    } catch { alert('오류가 발생했습니다') }
+  }
+
+  /* ── 리액션 토글 ── */
+  const handleReaction = async (toNick: string, type: string) => {
+    if (!myNickname) return
+    try {
+      await fetch('/api/room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'react', code, fromNick: myNickname, toNick, type }),
+      })
+      await fetchRoom()
+    } catch {}
   }
 
   const handleShare = async () => {
@@ -326,7 +366,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             <Share2 size={14} />
             공유하기
           </button>
-          {!isParticipant && (
+          {!isParticipant && !room.locked && (
             <button
               onClick={() => setShowJoin(true)}
               className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold text-white btn-bounce"
@@ -335,6 +375,12 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               <Users size={14} />
               참여하기
             </button>
+          )}
+          {room.locked && !isParticipant && (
+            <span className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-medium" style={{ background: '#f59e0b12', color: '#f59e0b', border: '1px solid #f59e0b20' }}>
+              <Lock size={12} />
+              참여 잠금됨
+            </span>
           )}
         </div>
       </div>
@@ -349,7 +395,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 <X size={12} style={{ color: 'var(--muted)' }} />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 mb-3">
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(window.location.href)
@@ -371,6 +417,20 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 링크 공유
               </button>
             </div>
+            {/* QR 코드 */}
+            <button
+              onClick={() => setShowQR(!showQR)}
+              className="w-full py-2 rounded-xl text-[11px] font-medium btn-bounce"
+              style={{ background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--muted)' }}
+            >
+              {showQR ? 'QR 닫기' : 'QR 코드 보기'}
+            </button>
+            {showQR && qrUrl && (
+              <div className="mt-3 flex flex-col items-center gap-2 animate-scale-in">
+                <img src={qrUrl} alt="QR Code" className="w-40 h-40 rounded-xl" style={{ background: 'white' }} />
+                <p className="text-[10px]" style={{ color: 'var(--muted)' }}>QR을 스캔하면 바로 참여할 수 있어요</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -462,6 +522,24 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     </div>
                   </div>
                 )}
+
+                {/* 방 잠금/해제 */}
+                <div className="mb-4">
+                  <button
+                    onClick={handleToggleLock}
+                    className="w-full py-2.5 rounded-xl text-sm font-bold btn-bounce flex items-center justify-center gap-1.5"
+                    style={{
+                      background: room?.locked ? '#f59e0b10' : `${test.color}08`,
+                      color: room?.locked ? '#f59e0b' : test.color,
+                      border: `1px solid ${room?.locked ? '#f59e0b20' : `${test.color}20`}`,
+                    }}
+                  >
+                    {room?.locked ? <><Unlock size={14} /> 잠금 해제</> : <><Lock size={14} /> 방 잠그기</>}
+                  </button>
+                  <p className="text-[10px] text-center mt-1" style={{ color: 'var(--muted)' }}>
+                    {room?.locked ? '현재 잠금 상태 (새 참여 차단)' : '잠그면 새로운 참여를 차단합니다'}
+                  </p>
+                </div>
 
                 {/* 방 삭제 */}
                 <div className="pt-3" style={{ borderTop: '1px solid var(--border)' }}>
@@ -579,6 +657,15 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     {isMe && <span style={{ color: result.color }}> (나)</span>}
                   </span>
                   <span className="text-[9px]" style={{ color: result.color }}>{result.title}</span>
+                  {/* 받은 리액션 카운트 */}
+                  {(() => {
+                    const received = room.reactions.filter(r => r.toNick === p.nickname)
+                    return received.length > 0 ? (
+                      <span className="text-[9px]" style={{ color: 'var(--muted)' }}>
+                        {received.map(r => r.type === 'laugh' ? '😂' : r.type === 'surprise' ? '😮' : r.type === 'agree' ? '👍' : '🔥').slice(0, 4).join('')}
+                      </span>
+                    ) : null
+                  })()}
                 </button>
               )
             })}
@@ -609,12 +696,40 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             {/* 결과 보기 버튼 */}
             <Link
               href={`/result/${room.testId}/${focusPerson.resultType}?s=${encodeURIComponent(JSON.stringify(focusPerson.scores))}`}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold mb-4 btn-bounce"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold mb-3 btn-bounce"
               style={{ background: `${focusResult.color}12`, color: focusResult.color, border: `1px solid ${focusResult.color}25` }}
             >
               {focusPerson.nickname}의 결과 보기
               <ChevronRight size={14} />
             </Link>
+
+            {/* 리액션 버튼 */}
+            {myNickname && focusPerson.nickname !== myNickname && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                {[
+                  { type: 'laugh', label: '😂' },
+                  { type: 'surprise', label: '😮' },
+                  { type: 'agree', label: '👍' },
+                  { type: 'fire', label: '🔥' },
+                ].map(r => {
+                  const active = room.reactions.some(rx => rx.fromNick === myNickname && rx.toNick === focusPerson.nickname && rx.type === r.type)
+                  return (
+                    <button
+                      key={r.type}
+                      onClick={() => handleReaction(focusPerson.nickname, r.type)}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all btn-bounce"
+                      style={{
+                        background: active ? `${focusResult.color}20` : 'var(--card)',
+                        border: `1.5px solid ${active ? focusResult.color : 'var(--border)'}`,
+                        transform: active ? 'scale(1.1)' : 'scale(1)',
+                      }}
+                    >
+                      {r.label}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
 
             <div className="space-y-3">
               {participants.filter(p => p.nickname !== focusPerson.nickname).map(other => {
@@ -945,6 +1060,17 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
 
       {/* ═══ 액션 버튼 ═══ */}
       <div className="space-y-2.5 animate-fade-up delay-300">
+        {/* 다시 테스트하기 (참여자만) */}
+        {isParticipant && (
+          <Link
+            href={`/quiz/${room.testId}/play?room=${code}&nickname=${encodeURIComponent(myNickname || '')}`}
+            className="w-full py-3.5 rounded-2xl font-bold text-sm btn-bounce flex items-center justify-center gap-2"
+            style={{ background: `${test.color}08`, border: `1px solid ${test.color}20`, color: test.color }}
+          >
+            <RotateCcw size={14} />
+            다시 테스트하기
+          </Link>
+        )}
         <button onClick={fetchRoom} className="w-full py-3.5 rounded-2xl font-medium text-sm btn-bounce flex items-center justify-center gap-2"
           style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <RefreshCw size={14} />
