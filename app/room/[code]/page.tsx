@@ -681,8 +681,8 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
         </div>
       )}
 
-      {/* ═══ 5. 선택된 인물 상세 궁합 ═══ */}
-      {focusPerson && focusResult && participants.length >= 2 && (
+      {/* ═══ 5. 선택된 인물 상세 ═══ */}
+      {focusPerson && focusResult && (
         <div className="mb-6 animate-scale-in">
           <div
             className="rounded-2xl p-5 overflow-hidden"
@@ -693,7 +693,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-full h-full object-contain" /> : focusResult.emoji}
               </div>
               <div className="flex-1">
-                <p className="font-bold text-sm">{focusPerson.nickname}의 궁합</p>
+                <p className="font-bold text-sm">{focusPerson.nickname}</p>
                 <p className="text-xs" style={{ color: focusResult.color }}>{focusResult.title} · {focusResult.subtitle}</p>
               </div>
               <button onClick={() => setSelectedPerson(null)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'var(--card)' }}>
@@ -739,51 +739,54 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               </div>
             )}
 
-            <div className="space-y-3">
-              {participants.filter(p => p.nickname !== focusPerson.nickname).map(other => {
-                const score = compatMatrix[focusPerson.nickname]?.[other.nickname] || 0
-                const desc = getCompatDescription(score)
-                const otherResult = getResult(room.testId, other.resultType)
-                if (!otherResult) return null
-                const details = getDetailedCompat(
-                  focusPerson.nickname, other.nickname,
-                  focusPerson.scores, other.scores,
-                  test.axes, AXIS_LABELS, score,
-                )
-                return (
-                  <div key={other.nickname} className="rounded-xl p-3.5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-                    {/* 상단: 이모지 + 이름 + 점수 */}
-                    <div className="flex items-center gap-2.5 mb-2.5">
-                      {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${focusResult.color}10` }} /> : <span className="text-xl">{focusResult.emoji}</span>}
-                      <div className="flex-1">
-                        <div className="h-2 rounded-full overflow-hidden" style={{ background: `${desc.color}15` }}>
-                          <div className="h-full rounded-full" style={{ width: `${score}%`, background: `linear-gradient(90deg, ${desc.color}80, ${desc.color})`, transition: 'width 0.8s ease' }} />
+            {/* 다른 참가자와의 궁합 (2명 이상일 때만) */}
+            {participants.length >= 2 && (
+              <div className="space-y-3">
+                {participants.filter(p => p.nickname !== focusPerson.nickname).map(other => {
+                  const score = compatMatrix[focusPerson.nickname]?.[other.nickname] || 0
+                  const desc = getCompatDescription(score)
+                  const otherResult = getResult(room.testId, other.resultType)
+                  if (!otherResult) return null
+                  const details = getDetailedCompat(
+                    focusPerson.nickname, other.nickname,
+                    focusPerson.scores, other.scores,
+                    test.axes, AXIS_LABELS, score,
+                  )
+                  return (
+                    <div key={other.nickname} className="rounded-xl p-3.5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+                      {/* 상단: 이모지 + 이름 + 점수 */}
+                      <div className="flex items-center gap-2.5 mb-2.5">
+                        {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${focusResult.color}10` }} /> : <span className="text-xl">{focusResult.emoji}</span>}
+                        <div className="flex-1">
+                          <div className="h-2 rounded-full overflow-hidden" style={{ background: `${desc.color}15` }}>
+                            <div className="h-full rounded-full" style={{ width: `${score}%`, background: `linear-gradient(90deg, ${desc.color}80, ${desc.color})`, transition: 'width 0.8s ease' }} />
+                          </div>
                         </div>
+                        {otherResult.icon ? <img src={otherResult.icon} alt={otherResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${otherResult.color}10` }} /> : <span className="text-xl">{otherResult.emoji}</span>}
                       </div>
-                      {otherResult.icon ? <img src={otherResult.icon} alt={otherResult.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${otherResult.color}10` }} /> : <span className="text-xl">{otherResult.emoji}</span>}
-                    </div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-1.5">
-                        <img src={desc.icon} alt={desc.label} className="w-5 h-5 object-contain" />
-                        <span className="text-xs font-bold" style={{ color: desc.color }}>{desc.label}</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1.5">
+                          <img src={desc.icon} alt={desc.label} className="w-5 h-5 object-contain" />
+                          <span className="text-xs font-bold" style={{ color: desc.color }}>{desc.label}</span>
+                        </div>
+                        <span className="text-sm font-bold" style={{ color: desc.color }}>{score}%</span>
                       </div>
-                      <span className="text-sm font-bold" style={{ color: desc.color }}>{score}%</span>
+                      <p className="text-xs font-bold mb-1">
+                        {focusPerson.nickname} ↔ {other.nickname}
+                      </p>
+                      {/* 상세 설명 */}
+                      <div className="space-y-1">
+                        {details.map((line, i) => (
+                          <p key={i} className="text-[11px] leading-relaxed" style={{ color: 'var(--muted)' }}>
+                            · {line}
+                          </p>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-xs font-bold mb-1">
-                      {focusPerson.nickname} ↔ {other.nickname}
-                    </p>
-                    {/* 상세 설명 */}
-                    <div className="space-y-1">
-                      {details.map((line, i) => (
-                        <p key={i} className="text-[11px] leading-relaxed" style={{ color: 'var(--muted)' }}>
-                          · {line}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}
