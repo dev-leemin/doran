@@ -606,6 +606,16 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               </button>
             </div>
 
+            {/* 결과 보기 버튼 */}
+            <Link
+              href={`/result/${room.testId}/${focusPerson.resultType}?s=${encodeURIComponent(JSON.stringify(focusPerson.scores))}`}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold mb-4 btn-bounce"
+              style={{ background: `${focusResult.color}12`, color: focusResult.color, border: `1px solid ${focusResult.color}25` }}
+            >
+              {focusPerson.nickname}의 결과 보기
+              <ChevronRight size={14} />
+            </Link>
+
             <div className="space-y-3">
               {participants.filter(p => p.nickname !== focusPerson.nickname).map(other => {
                 const score = compatMatrix[focusPerson.nickname]?.[other.nickname] || 0
