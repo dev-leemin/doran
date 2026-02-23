@@ -64,6 +64,7 @@ export interface TestConfig {
   color: string           // CATEGORY_COLORS[category] 로 설정
   tags: string[]           // 상세 페이지에 표시할 태그 (예: ['직장인', '성격', 'MBTI'])
   avgTime?: string         // 평균 소요 시간 (예: '3분')
+  createdAt: string        // 생성일 (ISO format: '2026-02-18')
   questions: Question[]
   results: ResultType[]
   axes: string[]

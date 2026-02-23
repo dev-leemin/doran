@@ -11,15 +11,18 @@ import type { SavedResult, SavedRoom } from '@/lib/history'
 
 /** 깨진 날짜 포맷 복구 (예: '202601.02' → '2026.01.02') */
 function fixDate(d: string): string {
-  if (/^\d{4}\.\d{2}\.\d{2}$/.test(d)) return d // 이미 정상
-  const digits = d.replace(/\D/g, '') // 숫자만 추출
+  if (/^\d{4}\.\d{2}\.\d{2}$/.test(d)) return d
+  const digits = d.replace(/\D/g, '')
   if (digits.length === 8) return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}`
   return d
 }
 
+type SortMode = 'latest' | 'popular'
+
 export default function Home() {
   const [stats, setStats] = useState<Record<string, number>>({})
-  const [groupByCategory, setGroupByCategory] = useState(false)
+  const [sortMode, setSortMode] = useState<SortMode>('latest')
+  const [categoryFilter, setCategoryFilter] = useState<TestCategory | null>(null)
   const [recentResults, setRecentResults] = useState<SavedResult[]>([])
   const [recentRooms, setRecentRooms] = useState<SavedRoom[]>([])
 
@@ -29,62 +32,90 @@ export default function Home() {
       .then(data => setStats(data.stats ?? {}))
       .catch(() => {})
 
-    // localStorage에서 보기 모드 복원
-    const saved = localStorage.getItem('doran_view_mode')
-    if (saved === 'grouped') setGroupByCategory(true)
+    // localStorage에서 정렬 모드 복원
+    const saved = localStorage.getItem('doran_sort_mode')
+    if (saved === 'popular') setSortMode('popular')
 
     // 최근 활동 불러오기
     setRecentResults(getRecentResults())
     const rooms = getRecentRooms()
     setRecentRooms(rooms)
 
-    // 기존 방 기록에 참여자 수가 없으면 API에서 가져오기
-    rooms.forEach(async (room) => {
-      if (room.participantCount == null) {
+    // 방 존재 여부 확인 + 참여자 수 업데이트 + 삭제된 방 정리
+    ;(async () => {
+      const deletedCodes: string[] = []
+      await Promise.all(rooms.map(async (room) => {
         try {
           const res = await fetch(`/api/room?code=${room.code}`)
           const data = await res.json()
-          if (data.room?.participants) {
+          if (data.error || !data.room) {
+            deletedCodes.push(room.code)
+          } else if (data.room.participants) {
             setRecentRooms(prev =>
               prev.map(r =>
                 r.code === room.code
-                  ? { ...r, participantCount: data.room.participants.length }
+                  ? { ...r, participantCount: data.room.participants.length, name: data.room.name || r.name }
                   : r
               )
             )
           }
-        } catch { /* 방이 삭제되었을 수 있음 */ }
+        } catch {
+          deletedCodes.push(room.code)
+        }
+      }))
+      if (deletedCodes.length > 0) {
+        setRecentRooms(prev => {
+          const filtered = prev.filter(r => !deletedCodes.includes(r.code))
+          try { localStorage.setItem('doran_history_rooms', JSON.stringify(filtered)) } catch {}
+          return filtered
+        })
       }
-    })
+    })()
   }, [])
 
-  const toggleView = () => {
-    const next = !groupByCategory
-    setGroupByCategory(next)
-    localStorage.setItem('doran_view_mode', next ? 'grouped' : 'flat')
+  const toggleSort = (mode: SortMode) => {
+    setSortMode(mode)
+    localStorage.setItem('doran_sort_mode', mode)
   }
 
   const formatCount = (n: number) => n.toLocaleString('ko-KR')
 
-  /* 카테고리별 그룹핑 */
-  const grouped = useMemo(() => {
-    const map = new Map<TestCategory, typeof testList>()
-    testList.forEach(test => {
-      const list = map.get(test.category) || []
-      list.push(test)
-      map.set(test.category, list)
+  /* 테스트에 존재하는 카테고리 목록 (순서 유지) */
+  const categories = useMemo(() => {
+    const seen = new Set<TestCategory>()
+    const result: TestCategory[] = []
+    testList.forEach(t => {
+      if (!seen.has(t.category)) {
+        seen.add(t.category)
+        result.push(t.category)
+      }
     })
-    return Array.from(map.entries())
+    return result
   }, [])
 
+  /* 필터 + 정렬된 테스트 목록 */
+  const sortedTests = useMemo(() => {
+    let list = [...testList]
+    if (categoryFilter) {
+      list = list.filter(t => t.category === categoryFilter)
+    }
+    if (sortMode === 'latest') {
+      list.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    } else {
+      list.sort((a, b) => (stats[b.id] ?? 0) - (stats[a.id] ?? 0))
+    }
+    return list
+  }, [sortMode, stats, categoryFilter])
+
   /* 카드 렌더링 */
-  const renderCard = (test: TestConfig, i: number, delayBase = 0) => {
+  const renderCard = (test: TestConfig, i: number) => {
     const count = stats[test.id] ?? 0
     return (
       <Link
         key={test.id}
         href={`/quiz/${test.id}`}
-        className={`block animate-fade-up delay-${Math.min((i + 1) * 100 + delayBase, 800)}`}
+        className={`block shrink-0 snap-start animate-fade-up delay-${Math.min((i + 1) * 100, 800)}`}
+        style={{ width: '160px', minWidth: '160px' }}
       >
         <div
           className="relative overflow-hidden rounded-2xl h-full transition-all duration-300 btn-bounce flex flex-col"
@@ -104,19 +135,19 @@ export default function Home() {
         >
           {/* 배경 장식 */}
           <div
-            className="absolute -top-8 -right-8 w-28 h-28 rounded-full opacity-[0.08]"
+            className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-[0.08]"
             style={{ background: `radial-gradient(circle, ${test.color}, transparent 70%)` }}
           />
 
-          <div className="relative p-5 flex flex-col items-center text-center flex-1">
+          <div className="relative p-4 flex flex-col items-center text-center flex-1">
             {/* 아이콘 */}
             {test.icon ? (
-              <div className="w-14 h-14 rounded-2xl overflow-hidden mb-3">
-                <Image src={test.icon} alt={test.title} width={56} height={56} className="w-full h-full object-cover" />
+              <div className="w-11 h-11 rounded-xl overflow-hidden mb-2">
+                <Image src={test.icon} alt={test.title} width={44} height={44} className="w-full h-full object-cover" />
               </div>
             ) : (
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-3"
+                className="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-2"
                 style={{ background: `${test.color}12` }}
               >
                 {test.emoji}
@@ -124,34 +155,27 @@ export default function Home() {
             )}
 
             {/* 제목 + 설명 */}
-            <h2 className="font-bold text-base mb-1">{test.title}</h2>
-            <p className="text-xs mb-3 leading-relaxed flex-1" style={{ color: 'var(--muted)' }}>
+            <h2 className="font-bold text-sm mb-0.5">{test.title}</h2>
+            <p className="text-[11px] mb-2 leading-snug flex-1" style={{ color: 'var(--muted)' }}>
               {test.description}
             </p>
 
-            {/* 참여 수 */}
-            {count > 0 && (
-              <div
-                className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium mb-2"
-                style={{ background: `${test.color}10`, color: test.color }}
+            {/* 참여 수 + 시작 */}
+            <div className="flex items-center gap-1.5 mt-auto">
+              {count > 0 && (
+                <span
+                  className="text-[9px] font-medium px-1.5 py-0.5 rounded-full"
+                  style={{ background: `${test.color}10`, color: test.color }}
+                >
+                  {formatCount(count)}명
+                </span>
+              )}
+              <span
+                className="text-[10px] font-bold px-3 py-1 rounded-full text-white"
+                style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                </svg>
-                {formatCount(count)}명
-              </div>
-            )}
-
-            {/* 시작 버튼 */}
-            <div
-              className="flex items-center gap-1 px-4 py-1.5 rounded-full text-xs font-bold text-white mt-auto"
-              style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
-            >
-              시작
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
+                시작 →
+              </span>
             </div>
           </div>
         </div>
@@ -168,76 +192,72 @@ export default function Home() {
         </p>
       </section>
 
-      {/* 보기 모드 토글 */}
-      <div className="flex justify-end mb-5 animate-fade-up">
+      {/* 카테고리 필터 칩 */}
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar -mx-5 px-5 mb-3 animate-fade-up">
         <button
-          onClick={toggleView}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 btn-bounce cursor-pointer"
+          onClick={() => setCategoryFilter(null)}
+          className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 cursor-pointer"
           style={{
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-            color: 'var(--muted)',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'var(--sky-50)'
-            e.currentTarget.style.borderColor = 'var(--sky-300)'
-            e.currentTarget.style.color = 'var(--sky-500)'
-            e.currentTarget.style.transform = 'scale(1.05)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'var(--card)'
-            e.currentTarget.style.borderColor = 'var(--border)'
-            e.currentTarget.style.color = 'var(--muted)'
-            e.currentTarget.style.transform = 'scale(1)'
+            background: categoryFilter === null ? 'var(--sky-500)' : 'var(--card)',
+            color: categoryFilter === null ? '#fff' : 'var(--muted)',
+            border: `1px solid ${categoryFilter === null ? 'var(--sky-500)' : 'var(--border)'}`,
           }}
         >
-          {groupByCategory ? (
-            <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
-              </svg>
-              전체보기
-            </>
-          ) : (
-            <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
-                <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
-              </svg>
-              카테고리별
-            </>
-          )}
+          전체
         </button>
+        {categories.map(cat => {
+          const active = categoryFilter === cat
+          const catColor = CATEGORY_COLORS[cat]
+          return (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(active ? null : cat)}
+              className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 cursor-pointer"
+              style={{
+                background: active ? catColor : 'var(--card)',
+                color: active ? '#fff' : 'var(--muted)',
+                border: `1px solid ${active ? catColor : 'var(--border)'}`,
+              }}
+            >
+              {CATEGORY_LABELS[cat]}
+            </button>
+          )
+        })}
       </div>
 
-      {groupByCategory ? (
-        /* ── 카테고리별 보기 ── */
-        grouped.map(([category, tests], gi) => {
-          const catColor = CATEGORY_COLORS[category]
-          return (
-            <section key={category} className="mb-8 animate-fade-up delay-100">
-              <div className="flex items-center gap-2 mb-4">
-                <span
-                  className="text-xs font-bold px-2.5 py-1 rounded-full"
-                  style={{ background: `${catColor}12`, color: catColor }}
-                >
-                  {CATEGORY_LABELS[category]}
-                </span>
-                <div className="flex-1 h-px" style={{ background: `${catColor}20` }} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {tests.map((test, i) => renderCard(test, i, gi * 100))}
-              </div>
-            </section>
-          )
-        })
-      ) : (
-        /* ── 전체 보기 ── */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {testList.map((test, i) => renderCard(test, i))}
+      {/* 정렬 토글 */}
+      <div className="flex items-center justify-between mb-4 animate-fade-up">
+        <span className="text-xs font-bold" style={{ color: 'var(--fg)' }}>
+          테스트
+        </span>
+        <div
+          className="flex rounded-full p-0.5"
+          style={{ background: 'var(--sky-50)', border: '1px solid var(--border)' }}
+        >
+          {([['latest', '최신순'], ['popular', '인기순']] as [SortMode, string][]).map(([mode, label]) => (
+            <button
+              key={mode}
+              onClick={() => toggleSort(mode)}
+              className="px-3 py-1 rounded-full text-[11px] font-medium transition-all duration-200 cursor-pointer"
+              style={{
+                background: sortMode === mode ? 'var(--card)' : 'transparent',
+                color: sortMode === mode ? 'var(--sky-500)' : 'var(--muted)',
+                boxShadow: sortMode === mode ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
+
+      {/* 가로 스크롤 카드 */}
+      <div
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory hide-scrollbar -mx-5 px-5 pb-2 animate-fade-up delay-100"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        {sortedTests.map((test, i) => renderCard(test, i))}
+      </div>
 
       {/* 최근 활동 */}
       {(recentResults.length > 0 || recentRooms.length > 0) && (
