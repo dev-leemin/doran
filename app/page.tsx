@@ -8,6 +8,14 @@ import type { TestCategory, TestConfig } from '@/lib/tests'
 import { getRecentResults, getRecentRooms } from '@/lib/history'
 import type { SavedResult, SavedRoom } from '@/lib/history'
 
+/** 깨진 날짜 포맷 복구 (예: '202601.02' → '2026.01.02') */
+function fixDate(d: string): string {
+  if (/^\d{4}\.\d{2}\.\d{2}$/.test(d)) return d // 이미 정상
+  const digits = d.replace(/\D/g, '') // 숫자만 추출
+  if (digits.length === 8) return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}`
+  return d
+}
+
 export default function Home() {
   const [stats, setStats] = useState<Record<string, number>>({})
   const [groupByCategory, setGroupByCategory] = useState(false)
@@ -26,7 +34,27 @@ export default function Home() {
 
     // 최근 활동 불러오기
     setRecentResults(getRecentResults())
-    setRecentRooms(getRecentRooms())
+    const rooms = getRecentRooms()
+    setRecentRooms(rooms)
+
+    // 기존 방 기록에 참여자 수가 없으면 API에서 가져오기
+    rooms.forEach(async (room) => {
+      if (room.participantCount == null) {
+        try {
+          const res = await fetch(`/api/room?code=${room.code}`)
+          const data = await res.json()
+          if (data.room?.participants) {
+            setRecentRooms(prev =>
+              prev.map(r =>
+                r.code === room.code
+                  ? { ...r, participantCount: data.room.participants.length }
+                  : r
+              )
+            )
+          }
+        } catch { /* 방이 삭제되었을 수 있음 */ }
+      }
+    })
   }, [])
 
   const toggleView = () => {
@@ -253,7 +281,7 @@ export default function Home() {
                         </p>
                       </div>
                       <span className="text-[10px] shrink-0" style={{ color: 'var(--muted)' }}>
-                        {r.date}
+                        {fixDate(r.date)}
                       </span>
                     </Link>
                   )
@@ -269,6 +297,7 @@ export default function Home() {
               <div className="space-y-2">
                 {recentRooms.slice(0, 5).map(r => {
                   const t = getTest(r.testId)
+                  const roomColor = t?.color || '#6366f1'
                   return (
                     <Link
                       key={r.code}
@@ -276,24 +305,28 @@ export default function Home() {
                       className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200"
                       style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
                       onMouseEnter={e => {
-                        const c = t?.color || '#6366f1'
-                        e.currentTarget.style.borderColor = c
-                        e.currentTarget.style.background = `${c}06`
+                        e.currentTarget.style.borderColor = roomColor
+                        e.currentTarget.style.background = `${roomColor}06`
                       }}
                       onMouseLeave={e => {
                         e.currentTarget.style.borderColor = 'var(--border)'
                         e.currentTarget.style.background = 'var(--card)'
                       }}
                     >
-                      <span className="text-2xl shrink-0">👥</span>
+                      {t?.icon ? (
+                        <img src={t.icon} alt={t.title} className="w-9 h-9 rounded-lg object-contain shrink-0" style={{ background: `${roomColor}10` }} />
+                      ) : (
+                        <span className="text-2xl shrink-0">{t?.emoji || '👥'}</span>
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold truncate">{r.name || r.code}</p>
                         <p className="text-[10px] truncate" style={{ color: 'var(--muted)' }}>
                           {t?.title || '테스트'} · {r.nickname}
+                          {r.participantCount != null && ` · ${r.participantCount}명`}
                         </p>
                       </div>
                       <span className="text-[10px] shrink-0" style={{ color: 'var(--muted)' }}>
-                        {r.date}
+                        {fixDate(r.date)}
                       </span>
                     </Link>
                   )

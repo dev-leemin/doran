@@ -24,6 +24,7 @@ export interface SavedRoom {
   testId: string
   nickname: string
   date: string // 'YYYY.MM.DD'
+  participantCount?: number
 }
 
 function today(): string {
@@ -63,11 +64,12 @@ export function saveRoomParticipation(
   name: string,
   testId: string,
   nickname: string,
+  participantCount?: number,
 ) {
   try {
     const saved: SavedRoom[] = JSON.parse(localStorage.getItem(ROOMS_KEY) || '[]')
     const filtered = saved.filter(r => r.code !== code)
-    filtered.unshift({ code, name, testId, nickname, date: today() })
+    filtered.unshift({ code, name, testId, nickname, date: today(), participantCount })
     localStorage.setItem(ROOMS_KEY, JSON.stringify(filtered.slice(0, MAX_ITEMS)))
   } catch { /* localStorage 사용 불가 */ }
 }

@@ -373,7 +373,7 @@ export default function ResultPage({
                     if (data.error) {
                       alert(data.error)
                     } else {
-                      saveRoomParticipation(roomCode.trim(), data.room?.name || '', testId, nickname.trim())
+                      saveRoomParticipation(roomCode.trim(), data.room?.name || '', testId, nickname.trim(), data.room?.participants?.length)
                       router.push(`/room/${roomCode.trim()}`)
                     }
                   } catch {

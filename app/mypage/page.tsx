@@ -6,6 +6,14 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getTest, getResult } from '@/lib/tests'
 
+/** 깨진 날짜 포맷 복구 (예: '202601.02' → '2026.01.02') */
+function fixDate(d: string): string {
+  if (/^\d{4}\.\d{2}\.\d{2}$/.test(d)) return d
+  const digits = d.replace(/\D/g, '')
+  if (digits.length === 8) return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}`
+  return d
+}
+
 interface SavedResult {
   testId: string
   resultType: string
@@ -183,7 +191,7 @@ export default function MyPage() {
                     <p className="font-bold text-sm">{result.title}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[11px]" style={{ color: 'var(--muted)' }}>{r.date}</p>
+                    <p className="text-[11px]" style={{ color: 'var(--muted)' }}>{fixDate(r.date)}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: result.color }}>{result.subtitle}</p>
                   </div>
                 </Link>

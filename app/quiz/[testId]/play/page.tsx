@@ -152,7 +152,7 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
           /* 방 참여 모드면 자동으로 방에 입장 */
           if (roomCodeState && roomNicknameState) {
             try {
-              await fetch('/api/room', {
+              const joinRes = await fetch('/api/room', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -163,8 +163,9 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
                   resultType,
                 }),
               })
+              const joinData = await joinRes.json()
               /* 방 참여 기록 저장 */
-              saveRoomParticipation(roomCodeState, roomNameInput || '', testId, roomNicknameState)
+              saveRoomParticipation(roomCodeState, roomNameInput || '', testId, roomNicknameState, joinData.room?.participants?.length)
               router.push(`/room/${roomCodeState}`)
               return
             } catch { /* fallback to normal result */ }
