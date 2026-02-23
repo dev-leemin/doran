@@ -8,6 +8,7 @@ import { getTest, getResult } from '@/lib/tests'
 import { saveTestResult, saveRoomParticipation } from '@/lib/history'
 import { Share2, Link2, Users, Download, Camera, MessageCircle } from 'lucide-react'
 import html2canvas from 'html2canvas'
+import AdBanner from '@/components/ad-banner'
 
 export default function ResultPage({
   params,
@@ -253,6 +254,9 @@ export default function ResultPage({
         </div>
       </div>
 
+      {/* 광고 1: 결과 카드 하단 */}
+      <AdBanner slot="SLOT_RESULT_1" format="rectangle" className="mt-6" />
+
       {/* 점수 분석 */}
       {Object.keys(scores).length > 0 && (
         <div className="mt-6 animate-fade-up delay-200">
@@ -318,6 +322,9 @@ export default function ResultPage({
           공유하기
         </button>
       </div>
+
+      {/* 광고 2: 공유 버튼 하단 */}
+      <AdBanner slot="SLOT_RESULT_2" format="horizontal" className="mt-6" />
 
       {/* 리뷰 작성 */}
       <div className="mt-6 animate-fade-up delay-300">
