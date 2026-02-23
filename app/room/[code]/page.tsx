@@ -11,21 +11,21 @@ import QRCode from 'qrcode'
 
 /* ── 궁합 점수 → 설명 매핑 ── */
 function getCompatDescription(score: number) {
-  if (score >= 85) return { emoji: '💕', label: '환상의 케미', description: '서로의 성향이 아주 잘 맞아요! 함께하면 시너지가 폭발할 거예요.', color: '#ec4899', bg: '#fdf2f8' }
-  if (score >= 70) return { emoji: '😊', label: '좋은 궁합', description: '비슷한 성향이 많아서 편하게 지낼 수 있는 사이예요.', color: '#10b981', bg: '#ecfdf5' }
-  if (score >= 55) return { emoji: '🤝', label: '무난한 사이', description: '적당한 공통점과 차이점이 있어서 균형 잡힌 관계예요.', color: '#6366f1', bg: '#eef2ff' }
-  if (score >= 40) return { emoji: '🌈', label: '다채로운 조합', description: '서로 다른 점이 많지만, 그래서 오히려 배울 점도 많아요.', color: '#f59e0b', bg: '#fffbeb' }
-  return { emoji: '🔥', label: '반대의 매력', description: '성향이 많이 다르지만, 그만큼 서로에게 새로운 시각을 줄 수 있어요!', color: '#ef4444', bg: '#fef2f2' }
+  if (score >= 85) return { icon: '/icons/compat/perfect.png', label: '환상의 케미', description: '서로의 성향이 아주 잘 맞아요! 함께하면 시너지가 폭발할 거예요.', color: '#ec4899', bg: '#fdf2f8' }
+  if (score >= 70) return { icon: '/icons/compat/good.png', label: '좋은 궁합', description: '비슷한 성향이 많아서 편하게 지낼 수 있는 사이예요.', color: '#10b981', bg: '#ecfdf5' }
+  if (score >= 55) return { icon: '/icons/compat/okay.png', label: '무난한 사이', description: '적당한 공통점과 차이점이 있어서 균형 잡힌 관계예요.', color: '#6366f1', bg: '#eef2ff' }
+  if (score >= 40) return { icon: '/icons/compat/diverse.png', label: '다채로운 조합', description: '서로 다른 점이 많지만, 그래서 오히려 배울 점도 많아요.', color: '#f59e0b', bg: '#fffbeb' }
+  return { icon: '/icons/compat/opposite.png', label: '반대의 매력', description: '성향이 많이 다르지만, 그만큼 서로에게 새로운 시각을 줄 수 있어요!', color: '#ef4444', bg: '#fef2f2' }
 }
 
 /* ── 그룹 점수 → 모임 칭호 ── */
 function getGroupTitle(avg: number, count: number) {
-  if (count <= 1) return { title: '첫 모임', subtitle: '친구를 초대해보세요!', emoji: '🌱' }
-  if (avg >= 80) return { title: '찰떡궁합 모임', subtitle: '이 조합 진짜 잘 맞아요!', emoji: '✨' }
-  if (avg >= 65) return { title: '케미 넘치는 모임', subtitle: '함께하면 즐거운 관계예요', emoji: '🎉' }
-  if (avg >= 50) return { title: '균형 잡힌 모임', subtitle: '다양한 색깔이 공존하는 그룹', emoji: '⚖️' }
-  if (avg >= 35) return { title: '다채로운 모임', subtitle: '서로 다르기에 더 흥미로운 관계', emoji: '🌈' }
-  return { title: '불꽃 튀는 모임', subtitle: '개성 강한 멤버들의 만남!', emoji: '🔥' }
+  if (count <= 1) return { title: '첫 모임', subtitle: '친구를 초대해보세요!', icon: '/icons/group/first.png' }
+  if (avg >= 80) return { title: '찰떡궁합 모임', subtitle: '이 조합 진짜 잘 맞아요!', icon: '/icons/group/perfect.png' }
+  if (avg >= 65) return { title: '케미 넘치는 모임', subtitle: '함께하면 즐거운 관계예요', icon: '/icons/group/chemistry.png' }
+  if (avg >= 50) return { title: '균형 잡힌 모임', subtitle: '다양한 색깔이 공존하는 그룹', icon: '/icons/group/balanced.png' }
+  if (avg >= 35) return { title: '다채로운 모임', subtitle: '서로 다르기에 더 흥미로운 관계', icon: '/icons/group/colorful.png' }
+  return { title: '불꽃 튀는 모임', subtitle: '개성 강한 멤버들의 만남!', icon: '/icons/group/fire.png' }
 }
 
 /* ── 1:1 궁합 상세 텍스트 생성 ── */
@@ -252,7 +252,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
   if (error || !room) {
     return (
       <div className="max-w-lg mx-auto pt-20 text-center animate-fade-up">
-        <p className="text-5xl mb-4">😅</p>
+        <img src="/icons/status/not-found.png" alt="not found" className="w-20 h-20 mx-auto mb-4 object-contain" />
         <p className="font-bold text-lg mb-2">방을 찾을 수 없어요</p>
         <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>코드를 다시 확인해주세요</p>
         <Link href="/" className="inline-block px-6 py-3 rounded-2xl text-sm font-medium" style={{ background: 'var(--sky-100)', color: 'var(--sky-600)' }}>
@@ -569,7 +569,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             }}
           >
             <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full opacity-[0.06]" style={{ background: `radial-gradient(circle, ${test.color}, transparent 70%)` }} />
-            <p className="text-3xl mb-1">{groupInfo.emoji}</p>
+            <img src={groupInfo.icon} alt={groupInfo.title} className="w-10 h-10 mx-auto mb-1 object-contain" />
             <p className="text-xs font-medium mb-3" style={{ color: 'var(--muted)' }}>모임 궁합 지수</p>
             <p className="text-5xl font-bold mb-1" style={{ color: test.color }}>{avgScore}</p>
             <p className="text-sm font-bold mb-0.5">{groupInfo.title}</p>
@@ -660,9 +660,17 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                   {/* 받은 리액션 카운트 */}
                   {(() => {
                     const received = room.reactions.filter(r => r.toNick === p.nickname)
+                    const reactionIcons: Record<string, string | null> = {
+                      laugh: '/icons/reactions/reaction-laugh.png',
+                      surprise: '/icons/reactions/reaction-surprise.png',
+                      agree: '/icons/reactions/reaction-agree.png',
+                      fire: '/icons/reactions/reaction-fire.png',
+                    }
                     return received.length > 0 ? (
-                      <span className="text-[9px]" style={{ color: 'var(--muted)' }}>
-                        {received.map(r => r.type === 'laugh' ? '😂' : r.type === 'surprise' ? '😮' : r.type === 'agree' ? '👍' : '🔥').slice(0, 4).join('')}
+                      <span className="flex items-center gap-0.5">
+                        {received.slice(0, 4).map((r, i) => (
+                          <img key={i} src={reactionIcons[r.type] || '/icons/reactions/reaction-fire.png'} alt={r.type} className="w-3.5 h-3.5 object-contain" />
+                        ))}
                       </span>
                     ) : null
                   })()}
@@ -707,24 +715,24 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             {myNickname && focusPerson.nickname !== myNickname && (
               <div className="flex items-center justify-center gap-2 mb-4">
                 {[
-                  { type: 'laugh', label: '😂' },
-                  { type: 'surprise', label: '😮' },
-                  { type: 'agree', label: '👍' },
-                  { type: 'fire', label: '🔥' },
+                  { type: 'laugh', icon: '/icons/reactions/reaction-laugh.png' },
+                  { type: 'surprise', icon: '/icons/reactions/reaction-surprise.png' },
+                  { type: 'agree', icon: '/icons/reactions/reaction-agree.png' },
+                  { type: 'fire', icon: '/icons/reactions/reaction-fire.png' },
                 ].map(r => {
                   const active = room.reactions.some(rx => rx.fromNick === myNickname && rx.toNick === focusPerson.nickname && rx.type === r.type)
                   return (
                     <button
                       key={r.type}
                       onClick={() => handleReaction(focusPerson.nickname, r.type)}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-lg transition-all btn-bounce"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-all btn-bounce"
                       style={{
                         background: active ? `${focusResult.color}20` : 'var(--card)',
                         border: `1.5px solid ${active ? focusResult.color : 'var(--border)'}`,
                         transform: active ? 'scale(1.1)' : 'scale(1)',
                       }}
                     >
-                      {r.label}
+                      <img src={r.icon} alt={r.type} className="w-6 h-6 object-contain" />
                     </button>
                   )
                 })}
@@ -756,7 +764,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     </div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-sm">{desc.emoji}</span>
+                        <img src={desc.icon} alt={desc.label} className="w-5 h-5 object-contain" />
                         <span className="text-xs font-bold" style={{ color: desc.color }}>{desc.label}</span>
                       </div>
                       <span className="text-sm font-bold" style={{ color: desc.color }}>{score}%</span>
@@ -797,7 +805,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               <div className="relative rounded-2xl p-5 overflow-hidden" style={{ background: 'linear-gradient(135deg, #fef3c710, #fbbf2415)', border: '1px solid #fbbf2420' }}>
                 <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-[0.08]" style={{ background: 'radial-gradient(circle, #fbbf24, transparent 70%)' }} />
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-lg">🏆</span>
+                  <img src="/icons/highlights/best.png" alt="최고의 케미" className="w-6 h-6 object-contain" />
                   <span className="text-sm font-bold">최고의 케미</span>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-3">
@@ -836,7 +844,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             return (
               <div className="relative rounded-2xl p-5 overflow-hidden" style={{ background: 'linear-gradient(135deg, #fee2e210, #ef444410)', border: '1px solid #ef444420' }}>
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-lg">💥</span>
+                  <img src="/icons/highlights/surprise.png" alt="의외의 조합" className="w-6 h-6 object-contain" />
                   <span className="text-sm font-bold">의외의 조합</span>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-3">
@@ -876,7 +884,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 const p = participants.find(pp => pp.nickname === item.nickname)
                 const result = p ? getResult(room.testId, p.resultType) : null
                 if (!result) return null
-                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`
+                const medalIcon = i === 0 ? '/icons/medals/gold.png' : i === 1 ? '/icons/medals/silver.png' : i === 2 ? '/icons/medals/bronze.png' : null
                 const isMe = item.nickname === myNickname
                 const desc = getCompatDescription(item.avg)
                 const label = i === 0 ? '소셜왕' : i === personalAvg.length - 1 ? '개성파' : ''
@@ -886,7 +894,9 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                     className="flex items-center gap-3 p-2.5 rounded-xl transition-all"
                     style={{ background: isMe ? `${result.color}06` : 'transparent' }}
                   >
-                    <span className="text-base w-7 text-center shrink-0">{medal}</span>
+                    {medalIcon
+                      ? <img src={medalIcon} alt={`${i + 1}등`} className="w-7 h-7 object-contain shrink-0" />
+                      : <span className="text-xs w-7 text-center font-bold shrink-0" style={{ color: 'var(--muted)' }}>{i + 1}</span>}
                     {result.icon ? <img src={result.icon} alt={result.title} className="w-8 h-8 rounded-lg object-contain shrink-0" style={{ background: `${result.color}10` }} /> : <span className="text-xl shrink-0">{result.emoji}</span>}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
@@ -934,10 +944,10 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               })}
             </div>
             {Object.keys(typeDist).length === 1 && (
-              <p className="text-[11px] text-center" style={{ color: 'var(--muted)' }}>모두 같은 유형이에요! 찐 케미 보장 ✨</p>
+              <p className="text-[11px] text-center" style={{ color: 'var(--muted)' }}>모두 같은 유형이에요! 찐 케미 보장</p>
             )}
             {Object.keys(typeDist).length >= 3 && (
-              <p className="text-[11px] text-center" style={{ color: 'var(--muted)' }}>다양한 유형이 모여있는 활기 넘치는 그룹! 🎨</p>
+              <p className="text-[11px] text-center" style={{ color: 'var(--muted)' }}>다양한 유형이 모여있는 활기 넘치는 그룹!</p>
             )}
           </div>
         </div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getTest, getResult } from '@/lib/tests'
+import { FileText, MessageSquare, LogOut } from 'lucide-react'
 
 /** 깨진 날짜 포맷 복구 (예: '202601.02' → '2026.01.02') */
 function fixDate(d: string): string {
@@ -154,7 +155,9 @@ export default function MyPage() {
             className="text-center py-10 rounded-2xl"
             style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
           >
-            <p className="text-3xl mb-3">📝</p>
+            <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center" style={{ background: 'var(--sky-50)', color: 'var(--sky-400)' }}>
+              <FileText size={24} />
+            </div>
             <p className="text-sm font-medium mb-1">아직 테스트 결과가 없어요</p>
             <p className="text-xs mb-4" style={{ color: 'var(--muted)' }}>테스트를 하면 여기에 저장돼요</p>
             <Link
@@ -208,7 +211,7 @@ export default function MyPage() {
           className="block w-full text-left px-4 py-3.5 rounded-2xl text-sm font-medium transition-all"
           style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
         >
-          💬 테스트 목록
+          <span className="flex items-center gap-2"><MessageSquare size={16} /> 테스트 목록</span>
         </Link>
 
         <button
@@ -216,7 +219,7 @@ export default function MyPage() {
           className="w-full text-left px-4 py-3.5 rounded-2xl text-sm font-medium transition-all"
           style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--danger)' }}
         >
-          👋 로그아웃
+          <span className="flex items-center gap-2"><LogOut size={16} /> 로그아웃</span>
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTest } from '@/lib/tests'
@@ -75,7 +76,7 @@ export default function TestDetailPage({ params }: { params: Promise<{ testId: s
   if (!test) {
     return (
       <div className="max-w-lg mx-auto pt-20 text-center">
-        <p className="text-6xl mb-4">🤔</p>
+        <img src="/icons/status/no-test.png" alt="not found" className="w-20 h-20 mx-auto mb-4 object-contain" />
         <p className="font-bold text-lg">존재하지 않는 테스트예요</p>
       </div>
     )

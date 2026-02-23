@@ -16,7 +16,7 @@ export default function LoginPage() {
   return (
     <div className="max-w-lg mx-auto pt-16 pb-8">
       <div className="text-center mb-10 animate-fade-up">
-        <p className="text-4xl mb-3">👋</p>
+        <img src="/logo.png" alt="도란" className="w-14 h-14 mx-auto mb-3" />
         <h1 className="text-xl font-bold mb-2">도란에 오신 걸 환영해요</h1>
         <p className="text-sm" style={{ color: 'var(--muted)' }}>
           로그인하면 테스트 결과를 저장하고<br />

@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Users } from 'lucide-react'
 import { testList, CATEGORY_LABELS, CATEGORY_COLORS, getTest, getResult } from '@/lib/tests'
 import type { TestCategory, TestConfig } from '@/lib/tests'
 import { getRecentResults, getRecentRooms } from '@/lib/history'
@@ -316,7 +317,9 @@ export default function Home() {
                       {t?.icon ? (
                         <img src={t.icon} alt={t.title} className="w-9 h-9 rounded-lg object-contain shrink-0" style={{ background: `${roomColor}10` }} />
                       ) : (
-                        <span className="text-2xl shrink-0">{t?.emoji || '👥'}</span>
+                        <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${roomColor}10`, color: roomColor }}>
+                          <Users size={18} />
+                        </span>
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold truncate">{r.name || r.code}</p>

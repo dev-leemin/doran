@@ -3,6 +3,7 @@
 import { useState, useCallback, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import { Users, FileText, Clock, Link2 } from 'lucide-react'
 import { getTest } from '@/lib/tests'
 import type { Choice, Question } from '@/lib/tests'
 import { saveRoomParticipation, saveTestResult } from '@/lib/history'
@@ -46,7 +47,7 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
   if (!test) {
     return (
       <div className="max-w-lg mx-auto pt-20 text-center">
-        <p className="text-6xl mb-4">🤔</p>
+        <img src="/icons/status/no-test.png" alt="not found" className="w-20 h-20 mx-auto mb-4 object-contain" />
         <p className="font-bold text-lg">존재하지 않는 테스트예요</p>
       </div>
     )
@@ -229,7 +230,7 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
             style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
           >
             <div className="flex items-center justify-between">
-              <p className="text-xs font-bold">👥 방 참여 모드</p>
+              <p className="text-xs font-bold flex items-center gap-1"><Users size={14} /> 방 참여 모드</p>
               <p className="text-xs" style={{ color: 'var(--muted)' }}>방장이 설정한 문항으로 진행돼요</p>
             </div>
           </div>
@@ -269,8 +270,8 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
         >
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: `${test.color}10` }}>
-                📝
+              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${test.color}10`, color: test.color }}>
+                <FileText size={18} />
               </span>
               <div>
                 <p className="font-medium text-xs">랜덤 출제</p>
@@ -278,8 +279,8 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
               </div>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: `${test.color}10` }}>
-                ⏱️
+              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${test.color}10`, color: test.color }}>
+                <Clock size={18} />
               </span>
               <div>
                 <p className="font-medium text-xs">예상 소요시간</p>
@@ -287,8 +288,8 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
               </div>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <span className="w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background: `${test.color}10` }}>
-                🔗
+              <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${test.color}10`, color: test.color }}>
+                <Link2 size={18} />
               </span>
               <div>
                 <p className="font-medium text-xs">결과 공유</p>
@@ -414,12 +415,7 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
             className="absolute inset-0 rounded-full animate-ping opacity-20"
             style={{ background: test.color }}
           />
-          <div
-            className="relative w-20 h-20 rounded-full flex items-center justify-center text-4xl"
-            style={{ background: `${test.color}12` }}
-          >
-            🔮
-          </div>
+          <img src="/icons/status/loading.png" alt="분석 중" className="relative w-20 h-20 object-contain" />
         </div>
         <p className="font-bold text-lg mb-2">분석 중...</p>
         <p className="text-sm" style={{ color: 'var(--muted)' }}>

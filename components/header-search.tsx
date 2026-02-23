@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { Search } from 'lucide-react'
 import { testList, CATEGORY_LABELS } from '@/lib/tests'
 
 export default function HeaderSearch() {
@@ -97,7 +98,9 @@ export default function HeaderSearch() {
               <div className="max-h-80 overflow-y-auto p-2">
                 {filtered.length === 0 ? (
                   <div className="py-8 text-center">
-                    <p className="text-2xl mb-2">🔍</p>
+                    <div className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center" style={{ background: 'var(--sky-50)', color: 'var(--sky-400)' }}>
+                      <Search size={20} />
+                    </div>
                     <p className="text-sm" style={{ color: 'var(--muted)' }}>검색 결과가 없어요</p>
                   </div>
                 ) : (

@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { getTest, getResult } from '@/lib/tests'
 import { saveTestResult, saveRoomParticipation } from '@/lib/history'
-import { Share2, Link2, Users, Download, Camera } from 'lucide-react'
+import { Share2, Link2, Users, Download, Camera, MessageCircle } from 'lucide-react'
 import html2canvas from 'html2canvas'
 
 export default function ResultPage({
@@ -88,7 +88,7 @@ export default function ResultPage({
   if (!test || !result) {
     return (
       <div className="max-w-lg mx-auto pt-20 text-center">
-        <p className="text-6xl mb-4">🤔</p>
+        <img src="/icons/status/no-test.png" alt="not found" className="w-20 h-20 mx-auto mb-4 object-contain" />
         <p className="font-bold">결과를 찾을 수 없어요</p>
         <Link href="/" className="mt-4 inline-block text-sm underline" style={{ color: 'var(--muted)' }}>
           홈으로 돌아가기
@@ -326,7 +326,9 @@ export default function ResultPage({
             className="rounded-2xl p-5 text-center"
             style={{ background: `${result.color}08`, border: `1px solid ${result.color}20` }}
           >
-            <p className="text-2xl mb-2">💬</p>
+            <div className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center" style={{ background: `${result.color}15`, color: result.color }}>
+              <MessageCircle size={20} />
+            </div>
             <p className="text-sm font-bold" style={{ color: result.color }}>리뷰가 등록되었어요!</p>
             <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>소중한 의견 감사합니다</p>
           </div>
