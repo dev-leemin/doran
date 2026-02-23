@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import Link from "next/link";
 import SessionProvider from "@/components/session-provider";
@@ -49,12 +48,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
         />
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <Script
+          <script
             async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-            data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
           />
         )}
       </head>
