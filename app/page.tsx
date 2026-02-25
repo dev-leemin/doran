@@ -109,6 +109,23 @@ export default function Home() {
     return list
   }, [sortMode, stats, categoryFilter])
 
+  /* 카테고리별 그룹 (전체 보기용) */
+  const groupedByCategory = useMemo(() => {
+    const sorted = sortMode === 'latest'
+      ? [...testList].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      : [...testList].sort((a, b) => (stats[b.id] ?? 0) - (stats[a.id] ?? 0))
+    const groups: { category: TestCategory; tests: TestConfig[] }[] = []
+    const seen = new Set<TestCategory>()
+    sorted.forEach(t => {
+      if (!seen.has(t.category)) {
+        seen.add(t.category)
+        groups.push({ category: t.category, tests: [] })
+      }
+      groups.find(g => g.category === t.category)!.tests.push(t)
+    })
+    return groups
+  }, [sortMode, stats])
+
   const useScrollMode = testList.length >= SCROLL_THRESHOLD
 
   /* ── 큰 카드 (테스트 적을 때) ── */
@@ -372,16 +389,36 @@ export default function Home() {
       </div>
 
       {/* 테스트 카드 */}
-      {useScrollMode ? (
-        /* 가로 스크롤 (5개 이상) */
-        <div
-          className="flex gap-3 overflow-x-auto snap-x snap-mandatory hide-scrollbar -mx-5 px-5 pb-2 animate-fade-up delay-200"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {sortedTests.map((test, i) => renderSmallCard(test, i))}
+      {useScrollMode && categoryFilter === null ? (
+        /* 전체 보기: 카테고리별 그룹 */
+        <div className="space-y-6 animate-fade-up delay-200">
+          {groupedByCategory.map(({ category, tests: groupTests }) => (
+            <div key={category}>
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: `${CATEGORY_COLORS[category]}15`, color: CATEGORY_COLORS[category] }}
+                >
+                  {CATEGORY_LABELS[category]}
+                </span>
+                <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+              </div>
+              <div
+                className="flex gap-3 overflow-x-auto snap-x snap-mandatory hide-scrollbar -mx-5 px-5 pb-2"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                {groupTests.map((test, i) => renderSmallCard(test, i))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : useScrollMode ? (
+        /* 특정 카테고리 선택: 큰 카드 리스트 */
+        <div className="space-y-3 animate-fade-up delay-200">
+          {sortedTests.map((test, i) => renderBigCard(test, i))}
         </div>
       ) : (
-        /* 큰 카드 리스트 (5개 미만) */
+        /* 테스트 5개 미만: 큰 카드 리스트 */
         <div className="space-y-3 animate-fade-up delay-200">
           {sortedTests.map((test, i) => renderBigCard(test, i))}
         </div>
