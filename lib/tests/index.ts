@@ -1,15 +1,21 @@
 import officeTest from './office'
 import lunchTest from './lunch'
 import compatibilityTest from './compatibility'
+import animalTest from './animal'
+import loveTest from './love'
+import travelTest from './travel'
 import { TestConfig } from './types'
 
 export const tests: Record<string, TestConfig> = {
   office: officeTest,
   lunch: lunchTest,
   compatibility: compatibilityTest,
+  animal: animalTest,
+  love: loveTest,
+  travel: travelTest,
 }
 
-export const testList = [officeTest, lunchTest, compatibilityTest]
+export const testList = [officeTest, lunchTest, compatibilityTest, animalTest, loveTest, travelTest]
 
 export function getTest(id: string): TestConfig | undefined {
   return tests[id]
