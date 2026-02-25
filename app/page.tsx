@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Users, Clock, TrendingUp } from 'lucide-react'
+import { Users, Clock, TrendingUp, Heart } from 'lucide-react'
 import { testList, CATEGORY_LABELS, CATEGORY_COLORS, getTest, getResult } from '@/lib/tests'
 import type { TestCategory, TestConfig } from '@/lib/tests'
 import { getRecentResults, getRecentRooms } from '@/lib/history'
@@ -23,6 +23,7 @@ const SCROLL_THRESHOLD = 5 // 이 수 이상이면 가로 스크롤 모드
 
 export default function Home() {
   const [stats, setStats] = useState<Record<string, number>>({})
+  const [likes, setLikes] = useState<Record<string, number>>({})
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [categoryFilter, setCategoryFilter] = useState<TestCategory | null>(null)
   const [recentResults, setRecentResults] = useState<SavedResult[]>([])
@@ -31,7 +32,10 @@ export default function Home() {
   useEffect(() => {
     fetch('/api/stats')
       .then(res => res.json())
-      .then(data => setStats(data.stats ?? {}))
+      .then(data => {
+        setStats(data.stats ?? {})
+        setLikes(data.likes ?? {})
+      })
       .catch(() => {})
 
     // localStorage에서 정렬 모드 복원
@@ -233,6 +237,7 @@ export default function Home() {
   /* ── 작은 카드 (가로 스크롤용) ── */
   const renderSmallCard = (test: TestConfig, i: number) => {
     const count = stats[test.id] ?? 0
+    const likeCount = likes[test.id] ?? 0
     return (
       <Link
         key={test.id}
@@ -277,7 +282,13 @@ export default function Home() {
             <p className="text-[11px] mb-2 leading-snug flex-1" style={{ color: 'var(--muted)' }}>
               {test.description}
             </p>
-            <div className="flex items-center gap-1.5 mt-auto">
+            <div className="flex items-center gap-1.5 mt-auto flex-wrap justify-center">
+              {likeCount > 0 && (
+                <span className="flex items-center gap-0.5 text-[9px] font-medium" style={{ color: '#ef4444' }}>
+                  <Heart size={10} fill="#ef4444" />
+                  {formatCount(likeCount)}
+                </span>
+              )}
               {count > 0 && (
                 <span
                   className="text-[9px] font-medium px-1.5 py-0.5 rounded-full"
@@ -286,12 +297,6 @@ export default function Home() {
                   {formatCount(count)}명
                 </span>
               )}
-              <span
-                className="text-[10px] font-bold px-3 py-1 rounded-full text-white"
-                style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
-              >
-                시작 →
-              </span>
             </div>
           </div>
         </div>

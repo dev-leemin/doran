@@ -9,10 +9,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-/* ── GET: 모든 테스트 통계 조회 ── */
+/* ── GET: 모든 테스트 통계 조회 (참여수 + 좋아요수) ── */
 export async function GET() {
   try {
-    const stats = await prisma.testStat.findMany()
+    const [stats, likeCounts] = await Promise.all([
+      prisma.testStat.findMany(),
+      prisma.testReaction.groupBy({
+        by: ['testId'],
+        where: { type: 'like' },
+        _count: true,
+      }),
+    ])
 
     /* { testId: playCount } 형태로 변환 */
     const result: Record<string, number> = {}
@@ -20,7 +27,13 @@ export async function GET() {
       result[stat.testId] = stat.playCount
     }
 
-    return NextResponse.json({ stats: result })
+    /* { testId: likeCount } 형태로 변환 */
+    const likes: Record<string, number> = {}
+    for (const lc of likeCounts) {
+      likes[lc.testId] = lc._count
+    }
+
+    return NextResponse.json({ stats: result, likes })
   } catch (err) {
     console.error('[Stats API] GET error:', err)
     return NextResponse.json(
