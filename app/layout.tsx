@@ -48,6 +48,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
         />
+        <meta name="google-adsense-account" content="ca-pub-2632103940068646" />
       </head>
       <body className="antialiased min-h-dvh">
         <Script
@@ -56,7 +57,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-        <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('contextmenu',function(e){e.preventDefault()});document.addEventListener('dragstart',function(e){e.preventDefault()});try{if(localStorage.getItem('doran_theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('dragstart',function(e){e.preventDefault()});try{if(localStorage.getItem('doran_theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}` }} />
         <SessionProvider>
           {/* 배경 데코 */}
           <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
