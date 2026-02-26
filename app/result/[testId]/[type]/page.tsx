@@ -6,9 +6,19 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { getTest, getResult } from '@/lib/tests'
 import { saveTestResult, saveRoomParticipation } from '@/lib/history'
-import { Share2, Link2, Users, Download, Camera, MessageCircle } from 'lucide-react'
+import { Share2, Link2, Users, Camera, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import AdBanner from '@/components/ad-banner'
+
+function getSessionId() {
+  if (typeof window === 'undefined') return ''
+  let id = localStorage.getItem('doran_session_id')
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem('doran_session_id', id)
+  }
+  return id
+}
 
 export default function ResultPage({
   params,
@@ -31,6 +41,11 @@ export default function ResultPage({
   const cardRef = useRef<HTMLDivElement>(null)
   const [rarity, setRarity] = useState<{ percentage: number; total: number } | null>(null)
   const [saving, setSaving] = useState(false)
+
+  // 좋아요/싫어요
+  const [likes, setLikes] = useState(0)
+  const [dislikes, setDislikes] = useState(0)
+  const [myReaction, setMyReaction] = useState<string | null>(null)
 
   // 리뷰 작성
   const [reviewNickname, setReviewNickname] = useState('')
@@ -61,6 +76,20 @@ export default function ResultPage({
       saveTestResult(testId, type, scores)
     }
   }, [testId, type, scores])
+
+  // 좋아요/싫어요 조회
+  useEffect(() => {
+    if (!testId) return
+    const sessionId = getSessionId()
+    fetch(`/api/reactions?testId=${testId}&sessionId=${sessionId}`)
+      .then(r => r.json())
+      .then(d => {
+        setLikes(d.likes ?? 0)
+        setDislikes(d.dislikes ?? 0)
+        setMyReaction(d.myReaction ?? null)
+      })
+      .catch(() => {})
+  }, [testId])
 
   // 결과 통계 조회 + 카운트 증가
   useEffect(() => {
@@ -134,6 +163,21 @@ export default function ResultPage({
     setReviewSubmitting(false)
   }
 
+  const handleReaction = async (reactionType: 'like' | 'dislike') => {
+    const sessionId = getSessionId()
+    try {
+      const res = await fetch('/api/reactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ testId, type: reactionType, sessionId }),
+      })
+      const data = await res.json()
+      setLikes(data.likes ?? 0)
+      setDislikes(data.dislikes ?? 0)
+      setMyReaction(data.myReaction ?? null)
+    } catch {}
+  }
+
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(window.location.href)
     alert('링크가 복사되었어요!')
@@ -157,18 +201,36 @@ export default function ResultPage({
   }
 
   const axisLabels: Record<string, string> = {
-    efficiency: '효율',
-    social: '소셜',
-    initiative: '주도',
-    passion: '열정',
-    spicy: '매운맛',
-    adventure: '모험',
-    health: '건강',
-    mood: '기분파',
-    introvert: '내향',
-    planner: '계획',
-    trendy: '트렌디',
-    emotional: '감성',
+    // office
+    efficiency: '효율', social: '사교', initiative: '주도', passion: '열정',
+    // lunch
+    spicy: '매운맛', adventure: '모험', health: '건강', mood: '기분파',
+    // compatibility
+    introvert: '내향', planner: '계획', trendy: '트렌디', emotional: '감성',
+    // animal
+    energy: '에너지', instinct: '본능', freedom: '자유',
+    // love
+    affection: '애정', independence: '독립', romance: '로맨스', stability: '안정',
+    // travel
+    planning: '계획력', culture: '문화', relaxation: '휴식',
+    // color
+    warmth: '따뜻함', depth: '깊이', clarity: '명료함',
+    // stress
+    active: '활동', creative: '창의', calm: '평온',
+    // cafe
+    taste: '맛', vibe: '분위기',
+    // cooking
+    skill: '실력', creativity: '창작',
+    // friendship
+    loyalty: '충성', empathy: '공감',
+    // morning
+    discipline: '규율', mindful: '마음챙김',
+    // superpower
+    power: '힘', wisdom: '지혜', stealth: '은밀', charm: '매력',
+    // hobby
+    intellectual: '지적',
+    // fantasy
+    strength: '근력', intelligence: '지능', charisma: '카리스마', agility: '민첩',
   }
 
   return (
@@ -194,34 +256,62 @@ export default function ResultPage({
           />
 
           <div className="relative">
-            {/* 결과 유형 아이콘 */}
+            {/* 테스트 라벨 */}
+            <p
+              className="text-[11px] font-medium mb-3 tracking-wide uppercase"
+              style={{ color: result.color }}
+            >
+              {test.title}
+            </p>
+
+            {/* 결과 이미지 — 크게 */}
             {result.icon ? (
-              <img src={result.icon} alt={result.title} className="w-20 h-20 rounded-3xl mx-auto mb-4 object-contain" style={{ background: `${result.color}15` }} />
+              <div className="relative w-full rounded-2xl overflow-hidden mb-5 mx-auto" style={{ maxWidth: '280px' }}>
+                <img
+                  src={result.icon}
+                  alt={result.title}
+                  className="w-full h-auto"
+                  style={{ borderRadius: '16px' }}
+                />
+                {/* 희귀도 뱃지 (이미지 위) — N등급은 숨김 */}
+                {rarity && rarity.percentage <= 50 && (
+                  <span
+                    className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm"
+                    style={{ background: `${result.color}cc`, color: '#fff' }}
+                  >
+                    {rarity.percentage <= 10 ? 'SSR' : rarity.percentage <= 25 ? 'SR' : rarity.percentage <= 50 ? 'R' : 'N'}
+                    {' '}{rarity.percentage}%
+                  </span>
+                )}
+              </div>
             ) : (
               <div
-                className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4"
+                className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-5"
                 style={{ background: `${result.color}15` }}
               >
                 {result.emoji}
               </div>
             )}
 
-            {/* 테스트 라벨 */}
-            <p
-              className="text-xs font-medium mb-2 tracking-wide uppercase"
-              style={{ color: result.color }}
-            >
-              {test.title}
-            </p>
-
             {/* 결과 타이틀 */}
-            <h1 className="text-2xl font-bold mb-1">{result.title}</h1>
+            <h1 className="text-2xl font-bold mb-1">
+              {result.emoji} {result.title}
+            </h1>
             <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>
               {result.subtitle}
             </p>
 
-            {/* 태그 */}
+            {/* 태그 + 희귀도 */}
             <div className="flex flex-wrap justify-center gap-2 mb-5">
+              {rarity && rarity.percentage <= 50 && !result.icon && (
+                <span
+                  className="text-[11px] px-3 py-1 rounded-full font-bold"
+                  style={{ background: `${result.color}15`, color: result.color }}
+                >
+                  {rarity.percentage <= 10 ? 'SSR' : rarity.percentage <= 25 ? 'SR' : rarity.percentage <= 50 ? 'R' : 'N'}
+                  {' '}{rarity.percentage}% ({rarity.total}명 중)
+                </span>
+              )}
               {result.tags.map(tag => (
                 <span
                   key={tag}
@@ -232,19 +322,6 @@ export default function ResultPage({
                 </span>
               ))}
             </div>
-
-            {/* 희귀도 */}
-            {rarity && (
-              <div className="mb-4">
-                <span
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold"
-                  style={{ background: `${result.color}15`, color: result.color }}
-                >
-                  {rarity.percentage <= 10 ? 'SSR' : rarity.percentage <= 25 ? 'SR' : rarity.percentage <= 50 ? 'R' : 'N'}
-                  {' '}{rarity.percentage}% ({rarity.total}명 중)
-                </span>
-              </div>
-            )}
 
             {/* 설명 */}
             <p className="text-sm leading-relaxed" style={{ color: 'var(--fg)', opacity: 0.8 }}>
@@ -275,7 +352,7 @@ export default function ResultPage({
                   <div key={axis}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-medium">{axisLabels[axis] || axis}</span>
-                      <span className="text-xs" style={{ color: 'var(--muted)' }}>{score}점</span>
+                      <span className="text-xs font-bold" style={{ color: result.color }}>{pct}%</span>
                     </div>
                     <div className="h-2 rounded-full overflow-hidden" style={{ background: `${result.color}10` }}>
                       <div
@@ -294,33 +371,61 @@ export default function ResultPage({
         </div>
       )}
 
-      {/* 공유 버튼 */}
-      <div className="mt-6 grid grid-cols-3 gap-2 animate-fade-up delay-300">
-        <button
-          onClick={handleSaveImage}
-          disabled={saving}
-          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-xs transition-all btn-bounce"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', opacity: saving ? 0.6 : 1 }}
-        >
-          <Camera size={16} />
-          {saving ? '저장중...' : '이미지 저장'}
-        </button>
-        <button
-          onClick={handleCopyLink}
-          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-xs transition-all btn-bounce"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-        >
-          <Link2 size={16} />
-          링크 복사
-        </button>
-        <button
-          onClick={handleShare}
-          className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl text-white font-bold text-xs transition-all btn-bounce"
-          style={{ background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)` }}
-        >
-          <Share2 size={16} />
-          공유하기
-        </button>
+      {/* 좋아요 / 싫어요 + 공유 버튼 */}
+      <div className="mt-6 animate-fade-up delay-300">
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => handleReaction('like')}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-medium transition-all btn-bounce"
+            style={{
+              background: myReaction === 'like' ? `${result.color}15` : 'var(--card)',
+              border: myReaction === 'like' ? `1.5px solid ${result.color}40` : '1px solid var(--border)',
+              color: myReaction === 'like' ? result.color : 'var(--fg)',
+            }}
+          >
+            <ThumbsUp size={16} fill={myReaction === 'like' ? 'currentColor' : 'none'} />
+            좋아요{likes > 0 && ` ${likes}`}
+          </button>
+          <button
+            onClick={() => handleReaction('dislike')}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-medium transition-all btn-bounce"
+            style={{
+              background: myReaction === 'dislike' ? '#ef444415' : 'var(--card)',
+              border: myReaction === 'dislike' ? '1.5px solid #ef444440' : '1px solid var(--border)',
+              color: myReaction === 'dislike' ? '#ef4444' : 'var(--fg)',
+            }}
+          >
+            <ThumbsDown size={16} fill={myReaction === 'dislike' ? 'currentColor' : 'none'} />
+            싫어요{dislikes > 0 && ` ${dislikes}`}
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            onClick={handleSaveImage}
+            disabled={saving}
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-medium text-xs transition-all btn-bounce"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)', opacity: saving ? 0.6 : 1 }}
+          >
+            <Camera size={14} />
+            {saving ? '저장중...' : '이미지 저장'}
+          </button>
+          <button
+            onClick={handleCopyLink}
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-medium text-xs transition-all btn-bounce"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+          >
+            <Link2 size={14} />
+            링크 복사
+          </button>
+          <button
+            onClick={handleShare}
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white font-medium text-xs transition-all btn-bounce"
+            style={{ background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)` }}
+          >
+            <Share2 size={14} />
+            공유하기
+          </button>
+        </div>
       </div>
 
       {/* 광고 2: 공유 버튼 하단 */}
@@ -328,60 +433,59 @@ export default function ResultPage({
 
       {/* 리뷰 작성 */}
       <div className="mt-6 animate-fade-up delay-300">
-        {reviewDone ? (
-          <div
-            className="rounded-2xl p-5 text-center"
-            style={{ background: `${result.color}08`, border: `1px solid ${result.color}20` }}
-          >
-            <div className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center" style={{ background: `${result.color}15`, color: result.color }}>
-              <MessageCircle size={20} />
-            </div>
-            <p className="text-sm font-bold" style={{ color: result.color }}>리뷰가 등록되었어요!</p>
-            <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>소중한 의견 감사합니다</p>
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+        >
+          <div className="px-5 pt-4 pb-3 flex items-center gap-2">
+            <MessageCircle size={14} style={{ color: result.color }} />
+            <p className="text-sm font-bold">한줄 리뷰</p>
           </div>
-        ) : (
-          <div
-            className="rounded-2xl p-5"
-            style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-          >
-            <p className="text-sm font-bold mb-3">이 테스트 어땠나요?</p>
-            <div className="flex gap-2 mb-3">
-              <input
-                type="text"
-                placeholder="닉네임"
-                value={reviewNickname}
-                onChange={e => setReviewNickname(e.target.value)}
-                maxLength={10}
-                className="w-24 px-3 py-2.5 rounded-xl text-xs outline-none shrink-0"
-                style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
-                onFocus={e => { e.currentTarget.style.borderColor = result.color }}
-                onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
-              />
-              <input
-                type="text"
-                placeholder="리뷰를 남겨주세요 (200자)"
-                value={reviewText}
-                onChange={e => setReviewText(e.target.value)}
-                maxLength={200}
-                className="flex-1 px-3 py-2.5 rounded-xl text-xs outline-none"
-                style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
-                onFocus={e => { e.currentTarget.style.borderColor = result.color }}
-                onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
-                onKeyDown={e => { if (e.key === 'Enter' && !reviewSubmitting) handleSubmitReview() }}
-              />
+          {reviewDone ? (
+            <div className="px-5 pb-5 text-center">
+              <p className="text-sm font-medium" style={{ color: result.color }}>리뷰가 등록되었어요!</p>
+              <p className="text-[11px] mt-0.5" style={{ color: 'var(--muted)' }}>소중한 의견 감사합니다</p>
             </div>
-            <div className="flex justify-end">
-              <button
-                onClick={handleSubmitReview}
-                disabled={reviewSubmitting}
-                className="px-5 py-2 rounded-xl text-xs font-bold text-white btn-bounce"
-                style={{ background: result.color, opacity: reviewSubmitting ? 0.5 : 1 }}
-              >
-                {reviewSubmitting ? '등록 중...' : '등록'}
-              </button>
+          ) : (
+            <div className="px-5 pb-4">
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="닉네임"
+                  value={reviewNickname}
+                  onChange={e => setReviewNickname(e.target.value)}
+                  maxLength={10}
+                  className="w-full px-3 py-2.5 rounded-xl text-xs outline-none"
+                  style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
+                  onFocus={e => { e.currentTarget.style.borderColor = result.color }}
+                  onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
+                />
+                <textarea
+                  placeholder="이 테스트 어땠나요? 솔직한 리뷰를 남겨주세요!"
+                  value={reviewText}
+                  onChange={e => setReviewText(e.target.value)}
+                  maxLength={200}
+                  rows={2}
+                  className="w-full px-3 py-2.5 rounded-xl text-xs outline-none resize-none"
+                  style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
+                  onFocus={e => { e.currentTarget.style.borderColor = result.color }}
+                  onBlur={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
+                />
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-[10px]" style={{ color: 'var(--muted)' }}>{reviewText.length}/200</span>
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={reviewSubmitting}
+                  className="px-4 py-1.5 rounded-lg text-xs font-bold text-white btn-bounce"
+                  style={{ background: result.color, opacity: reviewSubmitting ? 0.5 : 1 }}
+                >
+                  {reviewSubmitting ? '등록 중...' : '등록'}
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* 방 참여 섹션 */}

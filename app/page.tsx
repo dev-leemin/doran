@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Users, Clock, TrendingUp, Heart } from 'lucide-react'
 import { testList, CATEGORY_LABELS, CATEGORY_COLORS, getTest, getResult } from '@/lib/tests'
+import AdBanner from '@/components/ad-banner'
 import type { TestCategory, TestConfig } from '@/lib/tests'
 import { getRecentResults, getRecentRooms } from '@/lib/history'
 import type { SavedResult, SavedRoom } from '@/lib/history'
@@ -132,9 +133,10 @@ export default function Home() {
 
   const useScrollMode = testList.length >= SCROLL_THRESHOLD
 
-  /* ── 큰 카드 (테스트 적을 때) ── */
+  /* ── 큰 카드 (카테고리 선택 시) ── */
   const renderBigCard = (test: TestConfig, i: number) => {
     const count = stats[test.id] ?? 0
+    const likeCount = likes[test.id] ?? 0
     const catLabel = CATEGORY_LABELS[test.category]
     const catColor = CATEGORY_COLORS[test.category]
     return (
@@ -146,7 +148,7 @@ export default function Home() {
         <div
           className="relative overflow-hidden rounded-2xl transition-all duration-300 btn-bounce"
           style={{
-            background: `linear-gradient(145deg, ${test.color}08, ${test.color}18)`,
+            background: 'var(--card)',
             border: `1px solid ${test.color}25`,
             boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
           }}
@@ -159,74 +161,77 @@ export default function Home() {
             e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)'
           }}
         >
-          {/* 배경 장식 */}
-          <div
-            className="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-[0.08]"
-            style={{ background: `radial-gradient(circle, ${test.color}, transparent 70%)` }}
-          />
-
-          <div className="relative p-5 flex items-center gap-4">
-            {/* 아이콘 */}
-            {test.icon ? (
-              <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0" style={{ background: `${test.color}10` }}>
-                <Image src={test.icon} alt={test.title} width={64} height={64} className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0"
-                style={{ background: `${test.color}12` }}
+          {/* 썸네일 이미지 배너 */}
+          {test.icon ? (
+            <div
+              className="relative w-full overflow-hidden"
+              style={{ aspectRatio: '2 / 1', background: `linear-gradient(145deg, ${test.color}08, ${test.color}18)` }}
+            >
+              <Image
+                src={test.icon}
+                alt={test.title}
+                fill
+                className="object-cover"
+              />
+              {/* 하단 그라데이션 오버레이 */}
+              <div className="absolute inset-x-0 bottom-0 h-12" style={{ background: 'linear-gradient(transparent, var(--card))' }} />
+              {/* 카테고리 뱃지 */}
+              <span
+                className="absolute top-3 left-3 text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                style={{ background: `${catColor}cc`, color: '#fff' }}
               >
-                {test.emoji}
-              </div>
-            )}
+                {catLabel}
+              </span>
+            </div>
+          ) : (
+            <div
+              className="relative w-full flex items-center justify-center text-5xl"
+              style={{ aspectRatio: '2 / 1', background: `linear-gradient(145deg, ${test.color}08, ${test.color}18)` }}
+            >
+              {test.emoji}
+              <span
+                className="absolute top-3 left-3 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                style={{ background: `${catColor}15`, color: catColor }}
+              >
+                {catLabel}
+              </span>
+            </div>
+          )}
 
-            {/* 정보 */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span
-                  className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                  style={{ background: `${catColor}15`, color: catColor }}
-                >
-                  {catLabel}
+          {/* 정보 */}
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className="font-bold text-base flex-1">{test.title}</h2>
+              {test.avgTime && (
+                <span className="flex items-center gap-0.5 text-[10px] shrink-0" style={{ color: 'var(--muted)' }}>
+                  <Clock size={10} />
+                  {test.avgTime}
                 </span>
-                {test.avgTime && (
-                  <span className="flex items-center gap-0.5 text-[10px]" style={{ color: 'var(--muted)' }}>
-                    <Clock size={10} />
-                    {test.avgTime}
-                  </span>
-                )}
-              </div>
-              <h2 className="font-bold text-base mb-0.5">{test.title}</h2>
-              <p className="text-xs leading-snug mb-2" style={{ color: 'var(--muted)' }}>
-                {test.description}
-              </p>
-              {/* 태그 */}
-              <div className="flex flex-wrap gap-1 mb-2">
-                {test.tags.slice(0, 3).map(tag => (
-                  <span
-                    key={tag}
-                    className="text-[9px] px-1.5 py-0.5 rounded-full"
-                    style={{ background: 'var(--sky-50)', color: 'var(--muted)' }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-              {/* 하단: 참여수 + 시작 */}
-              <div className="flex items-center gap-2">
-                {count > 0 && (
-                  <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--muted)' }}>
-                    <TrendingUp size={11} />
-                    {formatCount(count)}명 참여
-                  </span>
-                )}
-                <span
-                  className="ml-auto text-[11px] font-bold px-4 py-1.5 rounded-full text-white"
-                  style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
-                >
-                  시작하기 →
+              )}
+            </div>
+            <p className="text-xs leading-snug mb-3" style={{ color: 'var(--muted)' }}>
+              {test.description}
+            </p>
+            {/* 하단: 참여수 + 좋아요 + 시작 */}
+            <div className="flex items-center gap-2">
+              {likeCount > 0 && (
+                <span className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: '#ef4444' }}>
+                  <Heart size={11} fill="#ef4444" />
+                  {formatCount(likeCount)}
                 </span>
-              </div>
+              )}
+              {count > 0 && (
+                <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: 'var(--muted)' }}>
+                  <TrendingUp size={11} />
+                  {formatCount(count)}명
+                </span>
+              )}
+              <span
+                className="ml-auto text-[11px] font-bold px-4 py-1.5 rounded-full text-white"
+                style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
+              >
+                시작하기 →
+              </span>
             </div>
           </div>
         </div>
@@ -243,12 +248,12 @@ export default function Home() {
         key={test.id}
         href={`/quiz/${test.id}`}
         className={`block shrink-0 snap-start animate-fade-up delay-${Math.min((i + 1) * 100, 800)}`}
-        style={{ width: '160px', minWidth: '160px' }}
+        style={{ width: '150px', minWidth: '150px' }}
       >
         <div
           className="relative overflow-hidden rounded-2xl h-full transition-all duration-300 btn-bounce flex flex-col"
           style={{
-            background: `linear-gradient(145deg, ${test.color}06, ${test.color}15)`,
+            background: 'var(--card)',
             border: `1px solid ${test.color}20`,
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
           }}
@@ -261,28 +266,29 @@ export default function Home() {
             e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'
           }}
         >
-          <div
-            className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-[0.08]"
-            style={{ background: `radial-gradient(circle, ${test.color}, transparent 70%)` }}
-          />
-          <div className="relative p-4 flex flex-col items-center text-center flex-1">
-            {test.icon ? (
-              <div className="w-11 h-11 rounded-xl overflow-hidden mb-2">
-                <Image src={test.icon} alt={test.title} width={44} height={44} className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-2"
-                style={{ background: `${test.color}12` }}
-              >
-                {test.emoji}
-              </div>
-            )}
-            <h2 className="font-bold text-sm mb-0.5">{test.title}</h2>
-            <p className="text-[11px] mb-2 leading-snug flex-1" style={{ color: 'var(--muted)' }}>
+          {/* 썸네일 이미지 */}
+          {test.icon ? (
+            <div
+              className="relative w-full overflow-hidden"
+              style={{ aspectRatio: '1 / 1', background: `linear-gradient(145deg, ${test.color}06, ${test.color}15)` }}
+            >
+              <Image src={test.icon} alt={test.title} fill className="object-cover" />
+            </div>
+          ) : (
+            <div
+              className="w-full flex items-center justify-center text-3xl"
+              style={{ aspectRatio: '1 / 1', background: `linear-gradient(145deg, ${test.color}06, ${test.color}15)` }}
+            >
+              {test.emoji}
+            </div>
+          )}
+          {/* 텍스트 영역 */}
+          <div className="p-3 flex flex-col flex-1">
+            <h2 className="font-bold text-[13px] mb-0.5 line-clamp-1">{test.title}</h2>
+            <p className="text-[10px] mb-2 leading-snug flex-1 line-clamp-2" style={{ color: 'var(--muted)' }}>
               {test.description}
             </p>
-            <div className="flex items-center gap-1.5 mt-auto flex-wrap justify-center">
+            <div className="flex items-center gap-1.5 mt-auto flex-wrap">
               {likeCount > 0 && (
                 <span className="flex items-center gap-0.5 text-[9px] font-medium" style={{ color: '#ef4444' }}>
                   <Heart size={10} fill="#ef4444" />
@@ -429,6 +435,9 @@ export default function Home() {
         </div>
       )}
 
+      {/* 광고: 테스트 목록 하단 */}
+      <AdBanner format="horizontal" className="mt-6" />
+
       {/* 최근 활동 */}
       {(recentResults.length > 0 || recentRooms.length > 0) && (
         <section className="mt-10 animate-fade-up delay-300">
@@ -464,11 +473,20 @@ export default function Home() {
                         e.currentTarget.style.background = 'var(--card)'
                       }}
                     >
-                      {res.icon ? <img src={res.icon} alt={res.title} className="w-9 h-9 rounded-lg object-contain shrink-0" style={{ background: `${res.color}10` }} /> : <span className="text-2xl shrink-0">{res.emoji}</span>}
+                      {t.icon ? (
+                        <img src={t.icon} alt={t.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                      ) : (
+                        <span className="text-2xl shrink-0">{t.emoji}</span>
+                      )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold truncate">{res.title}</p>
-                        <p className="text-[10px] truncate" style={{ color: 'var(--muted)' }}>
-                          {t.title}
+                        <p className="text-xs font-bold truncate">{t.title}</p>
+                        <p className="text-[10px] truncate flex items-center gap-1" style={{ color: 'var(--muted)' }}>
+                          {res.icon ? (
+                            <img src={res.icon} alt={res.title} className="w-3.5 h-3.5 rounded-sm object-contain inline-block" />
+                          ) : (
+                            <span>{res.emoji}</span>
+                          )}
+                          {res.title}
                         </p>
                       </div>
                       <span className="text-[10px] shrink-0" style={{ color: 'var(--muted)' }}>

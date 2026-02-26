@@ -97,6 +97,22 @@ export default function RootLayout({
           <main className="max-w-3xl mx-auto px-5 pb-20">
             {children}
           </main>
+
+          {/* 푸터 */}
+          <footer className="border-t py-6 mt-8" style={{ borderColor: 'var(--border)' }}>
+            <div className="max-w-3xl mx-auto px-5 flex items-center justify-between">
+              <span className="text-[11px]" style={{ color: 'var(--muted)' }}>
+                &copy; 2026 도란도란
+              </span>
+              <a
+                href="/privacy"
+                className="text-[11px] hover:underline"
+                style={{ color: 'var(--muted)' }}
+              >
+                개인정보처리방침
+              </a>
+            </div>
+          </footer>
         </SessionProvider>
       </body>
     </html>

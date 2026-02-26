@@ -5,6 +5,7 @@ import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTest } from '@/lib/tests'
+import AdBanner from '@/components/ad-banner'
 
 interface Review {
   id: string
@@ -12,16 +13,6 @@ interface Review {
   content: string
   rating: number
   createdAt: string
-}
-
-function getSessionId() {
-  if (typeof window === 'undefined') return ''
-  let id = localStorage.getItem('doran_session_id')
-  if (!id) {
-    id = crypto.randomUUID()
-    localStorage.setItem('doran_session_id', id)
-  }
-  return id
 }
 
 function timeAgo(dateStr: string) {
@@ -42,27 +33,17 @@ export default function TestDetailPage({ params }: { params: Promise<{ testId: s
 
   const [playCount, setPlayCount] = useState(0)
   const [likes, setLikes] = useState(0)
-  const [dislikes, setDislikes] = useState(0)
-  const [myReaction, setMyReaction] = useState<string | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
 
   useEffect(() => {
     if (!test) return
-    const sessionId = getSessionId()
 
-    // 참여 수 조회
+    // 참여 수 + 좋아요 수 조회
     fetch('/api/stats')
       .then(r => r.json())
-      .then(d => setPlayCount(d.stats?.[testId] ?? 0))
-      .catch(() => {})
-
-    // 좋아요/싫어요 조회
-    fetch(`/api/reactions?testId=${testId}&sessionId=${sessionId}`)
-      .then(r => r.json())
       .then(d => {
-        setLikes(d.likes ?? 0)
-        setDislikes(d.dislikes ?? 0)
-        setMyReaction(d.myReaction ?? null)
+        setPlayCount(d.stats?.[testId] ?? 0)
+        setLikes(d.likes?.[testId] ?? 0)
       })
       .catch(() => {})
 
@@ -82,30 +63,17 @@ export default function TestDetailPage({ params }: { params: Promise<{ testId: s
     )
   }
 
-  const handleReaction = async (type: 'like' | 'dislike') => {
-    const sessionId = getSessionId()
-    try {
-      const res = await fetch('/api/reactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ testId, type, sessionId }),
-      })
-      const data = await res.json()
-      setLikes(data.likes ?? 0)
-      setDislikes(data.dislikes ?? 0)
-      setMyReaction(data.myReaction ?? null)
-    } catch {}
-  }
-
   const formatCount = (n: number) => n.toLocaleString('ko-KR')
 
   return (
     <div className="max-w-lg mx-auto pt-8 pb-8">
-      {/* 테스트 헤더 */}
+      {/* 테스트 헤더 — 히어로 이미지 + 제목 분리 */}
       <div className="text-center mb-6 animate-fade-up">
         {test.icon ? (
-          <div className="w-28 h-28 rounded-3xl overflow-hidden mx-auto mb-5 animate-float">
-            <Image src={test.icon} alt={test.title} width={112} height={112} className="w-full h-full object-cover" />
+          <div
+            className="relative w-full rounded-3xl overflow-hidden mb-5"
+          >
+            <Image src={test.icon} alt={test.title} width={1024} height={1024} className="w-full h-auto" />
           </div>
         ) : (
           <div
@@ -177,37 +145,20 @@ export default function TestDetailPage({ params }: { params: Promise<{ testId: s
         테스트 시작하기
       </Link>
 
-      {/* 좋아요 / 싫어요 */}
-      <div className="flex gap-3 mb-8 animate-fade-up delay-200">
-        <button
-          onClick={() => handleReaction('like')}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-medium transition-all btn-bounce"
-          style={{
-            background: myReaction === 'like' ? `${test.color}15` : 'var(--card)',
-            border: myReaction === 'like' ? `1.5px solid ${test.color}40` : '1px solid var(--border)',
-            color: myReaction === 'like' ? test.color : 'var(--fg)',
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={myReaction === 'like' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M7 10v12" /><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
+      {/* 좋아요 수 (읽기 전용) */}
+      {likes > 0 && (
+        <div className="flex items-center justify-center gap-1.5 mb-6 animate-fade-up delay-200">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" strokeWidth="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          좋아요 {likes > 0 && <span className="text-xs">({formatCount(likes)})</span>}
-        </button>
-        <button
-          onClick={() => handleReaction('dislike')}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-medium transition-all btn-bounce"
-          style={{
-            background: myReaction === 'dislike' ? '#ef444415' : 'var(--card)',
-            border: myReaction === 'dislike' ? '1.5px solid #ef444440' : '1px solid var(--border)',
-            color: myReaction === 'dislike' ? '#ef4444' : 'var(--fg)',
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={myReaction === 'dislike' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'rotate(180deg)' }}>
-            <path d="M7 10v12" /><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
-          </svg>
-          싫어요 {dislikes > 0 && <span className="text-xs">({formatCount(dislikes)})</span>}
-        </button>
-      </div>
+          <span className="text-sm font-medium" style={{ color: '#ef4444' }}>
+            {formatCount(likes)}명이 좋아해요
+          </span>
+        </div>
+      )}
+
+      {/* 광고: 시작 버튼 하단 */}
+      <AdBanner format="rectangle" className="mb-6" />
 
       {/* 리뷰 섹션 */}
       <div className="animate-fade-up delay-300">
