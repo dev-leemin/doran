@@ -5,7 +5,7 @@
  * 매 리로드마다 새 커넥션이 생기는 걸 방지하기 위해
  * globalThis에 인스턴스를 캐싱한다.
  */
-import { PrismaClient } from '@/generated/prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
