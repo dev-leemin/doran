@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Link from "next/link";
 import SessionProvider from "@/components/session-provider";
@@ -47,13 +48,14 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
         />
-        <script
+      </head>
+      <body className="antialiased min-h-dvh">
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2632103940068646"
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
-      </head>
-      <body className="antialiased min-h-dvh">
         <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('contextmenu',function(e){e.preventDefault()});document.addEventListener('dragstart',function(e){e.preventDefault()});try{if(localStorage.getItem('doran_theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}` }} />
         <SessionProvider>
           {/* 배경 데코 */}
