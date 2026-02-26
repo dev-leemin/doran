@@ -102,7 +102,16 @@ export default function PrivacyPage() {
         <section>
           <h2 className="font-bold mb-2">7. 문의</h2>
           <p>
-            개인정보 관련 문의사항이 있으시면 서비스 관리자에게 연락해 주세요.
+            개인정보 관련 문의사항이 있으시면 아래 이메일로 연락해 주세요.
+          </p>
+          <p className="mt-2">
+            <a
+              href="mailto:leemin.dev@gmail.com"
+              className="underline"
+              style={{ color: 'var(--sky-500)' }}
+            >
+              leemin.dev@gmail.com
+            </a>
           </p>
         </section>
 
