@@ -406,31 +406,35 @@ export default function ResultPage({
             싫어요{dislikes > 0 && ` ${dislikes}`}
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={handleSaveImage}
-            disabled={saving}
-            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-medium text-xs transition-all btn-bounce"
-            style={{ background: 'var(--card)', border: '1px solid var(--border)', opacity: saving ? 0.6 : 1 }}
-          >
-            <Camera size={14} />
-            {saving ? '저장중...' : '이미지 저장'}
-          </button>
+        {/* 공유 버튼 */}
+        <button
+          onClick={handleShare}
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-sm transition-all btn-bounce"
+          style={{
+            background: `linear-gradient(135deg, ${result.color}, ${result.color}aa)`,
+            boxShadow: `0 6px 24px ${result.color}40`,
+          }}
+        >
+          <Share2 size={18} />
+          결과 공유하기
+        </button>
+        <div className="grid grid-cols-2 gap-2 mt-2">
           <button
             onClick={handleCopyLink}
-            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-medium text-xs transition-all btn-bounce"
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-xs transition-all btn-bounce"
             style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
           >
             <Link2 size={14} />
             링크 복사
           </button>
           <button
-            onClick={handleShare}
-            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white font-medium text-xs transition-all btn-bounce"
-            style={{ background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)` }}
+            onClick={handleSaveImage}
+            disabled={saving}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-xs transition-all btn-bounce"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)', opacity: saving ? 0.6 : 1 }}
           >
-            <Share2 size={14} />
-            공유하기
+            <Camera size={14} />
+            {saving ? '저장중...' : '이미지 저장'}
           </button>
         </div>
       </div>

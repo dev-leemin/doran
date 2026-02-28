@@ -31,8 +31,8 @@ export default function HeaderAuth() {
 
   if (!session) {
     return (
-      <button
-        onClick={() => alert('아직 미구현입니다.')}
+      <Link
+        href="/login"
         className="w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
         style={{ background: 'var(--sky-50)', color: 'var(--sky-500)' }}
       >
@@ -40,7 +40,7 @@ export default function HeaderAuth() {
           <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
-      </button>
+      </Link>
     )
   }
 

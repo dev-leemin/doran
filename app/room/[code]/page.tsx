@@ -395,28 +395,29 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
                 <X size={12} style={{ color: 'var(--muted)' }} />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              <button
-                onClick={async () => {
-                  await navigator.clipboard.writeText(window.location.href)
-                  alert('링크가 복사되었어요!')
-                  setShowShareMenu(false)
-                }}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs btn-bounce"
-                style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
-              >
-                <Link2 size={14} />
-                링크 복사
-              </button>
-              <button
-                onClick={() => { handleShare(); setShowShareMenu(false) }}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-xs btn-bounce"
-                style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)` }}
-              >
-                <Share2 size={14} />
-                링크 공유
-              </button>
-            </div>
+            <button
+              onClick={() => { handleShare(); setShowShareMenu(false) }}
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-sm btn-bounce mb-2"
+              style={{
+                background: `linear-gradient(135deg, ${test.color}, ${test.color}aa)`,
+                boxShadow: `0 6px 24px ${test.color}40`,
+              }}
+            >
+              <Share2 size={18} />
+              친구에게 공유하기
+            </button>
+            <button
+              onClick={async () => {
+                await navigator.clipboard.writeText(window.location.href)
+                alert('링크가 복사되었어요!')
+                setShowShareMenu(false)
+              }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-xs btn-bounce mb-3"
+              style={{ background: 'var(--bg)', border: '1px solid var(--border)' }}
+            >
+              <Link2 size={14} />
+              링크 복사
+            </button>
             {/* QR 코드 */}
             <button
               onClick={() => setShowQR(!showQR)}
