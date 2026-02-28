@@ -11,13 +11,13 @@ import QRCode from 'qrcode'
 
 /* ── 궁합 점수 → 설명 매핑 (9단계) ── */
 function getCompatDescription(score: number) {
-  if (score >= 93) return { icon: '/icons/compat/perfect.png', label: '소울메이트', description: '거의 같은 사람! 함께라면 뭐든 잘 될 것 같아요.', color: '#ec4899', bg: '#fdf2f8' }
+  if (score >= 93) return { icon: '/icons/compat/soulmate.png', label: '소울메이트', description: '거의 같은 사람! 함께라면 뭐든 잘 될 것 같아요.', color: '#ec4899', bg: '#fdf2f8' }
   if (score >= 82) return { icon: '/icons/compat/perfect.png', label: '환상의 케미', description: '성향이 아주 잘 맞아요! 함께하면 시너지가 폭발해요.', color: '#db2777', bg: '#fdf2f8' }
-  if (score >= 72) return { icon: '/icons/compat/good.png', label: '티키타카 콤비', description: '대화가 잘 통하고 같이 있으면 편안한 사이예요.', color: '#10b981', bg: '#ecfdf5' }
+  if (score >= 72) return { icon: '/icons/compat/tikitaka.png', label: '티키타카 콤비', description: '대화가 잘 통하고 같이 있으면 편안한 사이예요.', color: '#10b981', bg: '#ecfdf5' }
   if (score >= 62) return { icon: '/icons/compat/good.png', label: '좋은 궁합', description: '비슷한 면이 많아서 자연스럽게 어울릴 수 있어요.', color: '#059669', bg: '#ecfdf5' }
   if (score >= 52) return { icon: '/icons/compat/okay.png', label: '무난한 사이', description: '적당한 공통점이 있어서 균형 잡힌 관계예요.', color: '#6366f1', bg: '#eef2ff' }
-  if (score >= 42) return { icon: '/icons/compat/okay.png', label: '중간쯤 어딘가', description: '공통점도 차이점도 있는 독특한 조합이에요.', color: '#8b5cf6', bg: '#f5f3ff' }
-  if (score >= 30) return { icon: '/icons/compat/diverse.png', label: '달라서 재밌어', description: '서로 달라서 오히려 흥미로운 대화가 이어질 수 있어요.', color: '#f59e0b', bg: '#fffbeb' }
+  if (score >= 42) return { icon: '/icons/compat/middle.png', label: '중간쯤 어딘가', description: '공통점도 차이점도 있는 독특한 조합이에요.', color: '#8b5cf6', bg: '#f5f3ff' }
+  if (score >= 30) return { icon: '/icons/compat/different-fun.png', label: '달라서 재밌어', description: '서로 달라서 오히려 흥미로운 대화가 이어질 수 있어요.', color: '#f59e0b', bg: '#fffbeb' }
   if (score >= 18) return { icon: '/icons/compat/diverse.png', label: '다채로운 조합', description: '성향 차이가 크지만, 배울 점이 정말 많은 관계예요.', color: '#d97706', bg: '#fffbeb' }
   return { icon: '/icons/compat/opposite.png', label: '반대의 매력', description: '정반대 성향이지만, 서로에게 새로운 세계를 열어줄 수 있어요!', color: '#ef4444', bg: '#fef2f2' }
 }
@@ -25,13 +25,13 @@ function getCompatDescription(score: number) {
 /* ── 그룹 점수 → 모임 칭호 (9단계) ── */
 function getGroupTitle(avg: number, count: number) {
   if (count <= 1) return { title: '첫 모임', subtitle: '친구를 초대해보세요!', icon: '/icons/group/first.png' }
-  if (avg >= 90) return { title: '소울메이트 모임', subtitle: '이 조합... 실화예요?! 완벽해요!', icon: '/icons/group/perfect.png' }
+  if (avg >= 90) return { title: '소울메이트 모임', subtitle: '이 조합... 실화예요?! 완벽해요!', icon: '/icons/group/soulmate.png' }
   if (avg >= 78) return { title: '찰떡궁합 모임', subtitle: '진짜 잘 맞는 조합이에요!', icon: '/icons/group/perfect.png' }
-  if (avg >= 68) return { title: '케미폭발 모임', subtitle: '함께라면 무적! 시너지 넘치는 그룹', icon: '/icons/group/chemistry.png' }
+  if (avg >= 68) return { title: '케미폭발 모임', subtitle: '함께라면 무적! 시너지 넘치는 그룹', icon: '/icons/group/synergy.png' }
   if (avg >= 57) return { title: '케미 있는 모임', subtitle: '함께하면 편안하고 즐거운 관계예요', icon: '/icons/group/chemistry.png' }
   if (avg >= 46) return { title: '균형 잡힌 모임', subtitle: '다양한 색깔이 조화롭게 공존해요', icon: '/icons/group/balanced.png' }
   if (avg >= 35) return { title: '다채로운 모임', subtitle: '서로 다르기에 더 흥미로운 관계예요', icon: '/icons/group/colorful.png' }
-  if (avg >= 22) return { title: '개성파 모임', subtitle: '각양각색! 매력이 넘치는 그룹이에요', icon: '/icons/group/colorful.png' }
+  if (avg >= 22) return { title: '개성파 모임', subtitle: '각양각색! 매력이 넘치는 그룹이에요', icon: '/icons/group/individual.png' }
   return { title: '불꽃 튀는 모임', subtitle: '강렬한 개성들의 만남, 흥미진진해요!', icon: '/icons/group/fire.png' }
 }
 

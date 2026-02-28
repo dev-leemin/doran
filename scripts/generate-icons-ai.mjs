@@ -46,6 +46,17 @@ const STYLE = `1024x1024, cute kawaii illustration, soft rounded art style, rich
 
 // ── 아이콘 목록 + 프롬프트 ──
 const ICONS = {
+  compat: [
+    { file: 'soulmate.png', dir: 'icons/compat', prompt: `${STYLE}. Two identical-looking characters gazing at each other with pure joy, surrounded by mirror-image sparkles and radiant soul-connection energy. Their thought bubbles show the exact same image. Glowing deep pink and shimmering white aura tones` },
+    { file: 'tikitaka.png', dir: 'icons/compat', prompt: `${STYLE}. Two characters perfectly in sync passing a glowing ball back and forth with matching smiles. Speech bubbles that complete each other's sentences, dynamic motion lines showing perfect rhythm. Energetic coral and lively teal tones` },
+    { file: 'middle.png', dir: 'icons/compat', prompt: `${STYLE}. A character standing at a cheerful crossroads with "우리" written on both paths, holding a balance scale that tips slightly forward with a thoughtful smile. Overlapping circles of color behind them. Mellow purple and balanced warm gray tones` },
+    { file: 'different-fun.png', dir: 'icons/compat', prompt: `${STYLE}. Two very different-looking characters high-fiving and laughing together, each holding opposite items (book vs game controller, coffee vs soda). A colorful rainbow bridge connecting them with sparks at the meeting point. Contrasting warm orange and cool blue tones` },
+  ],
+  group: [
+    { file: 'soulmate.png', dir: 'icons/group', prompt: `${STYLE}. A group of characters moving in perfect synchronized celebration, arms linked, sparkles and identical heart thought-bubbles above each head. Glowing harmony energy radiates from the center. Radiant pink and shimmering gold tones` },
+    { file: 'synergy.png', dir: 'icons/group', prompt: `${STYLE}. A group of characters each sending a colorful energy beam toward the center where it explodes into a brilliant rainbow burst. Everyone cheering with excitement. Electric multicolor explosion and dynamic spark tones` },
+    { file: 'individual.png', dir: 'icons/group', prompt: `${STYLE}. Multiple characters each doing their own unique activity in their own colorful spotlight side by side — one painting, one gaming, one dancing, one reading — all smiling happily. Bold contrasting spotlight colors for each character` },
+  ],
   tests: [
     { file: 'animal.png', dir: 'icons/tests', prompt: `${STYLE}. A cozy scene with various cute animals (dog, cat, fox, owl) gathered together in a magical forest clearing. Warm golden sunlight, flowers and butterflies, pastel green and gold tones` },
     { file: 'love.png', dir: 'icons/tests', prompt: `${STYLE}. A romantic scene with a character surrounded by floating hearts, love letters, and roses on a dreamy pink cloud background. Fairy lights and sparkles, warm pink and red tones` },
@@ -292,12 +303,10 @@ async function main() {
 
   // 필터링
   let allIcons = []
-  if (!onlyFilter || onlyFilter === 'tests') {
-    allIcons.push(...ICONS.tests)
-  }
-  if (!onlyFilter || onlyFilter === 'results') {
-    allIcons.push(...ICONS.results)
-  }
+  if (!onlyFilter || onlyFilter === 'compat') allIcons.push(...ICONS.compat)
+  if (!onlyFilter || onlyFilter === 'group') allIcons.push(...ICONS.group)
+  if (!onlyFilter || onlyFilter === 'tests') allIcons.push(...ICONS.tests)
+  if (!onlyFilter || onlyFilter === 'results') allIcons.push(...ICONS.results)
 
   // resume 모드: 이미 존재하는 파일 건너뛰기
   if (resumeMode) {
