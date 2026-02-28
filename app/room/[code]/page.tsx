@@ -87,6 +87,8 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
   const [editName, setEditName] = useState('')
   const [renaming, setRenaming] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const showCopied = () => { setCopied(true); setTimeout(() => setCopied(false), 2000) }
   const [qrUrl, setQrUrl] = useState<string | null>(null)
   const [showQR, setShowQR] = useState(false)
 
@@ -236,7 +238,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
       try { await navigator.share({ title: '도란', text, url }) } catch {}
     } else {
       await navigator.clipboard.writeText(`${text}${url}`)
-      alert('링크가 복사되었어요!')
+      showCopied()
     }
   }
 
@@ -330,6 +332,20 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
 
   return (
     <div className="max-w-lg mx-auto pt-6 pb-4">
+      {/* 링크 복사 토스트 */}
+      <div
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-semibold shadow-lg transition-all duration-300"
+        style={{
+          background: 'rgba(30,30,30,0.92)',
+          backdropFilter: 'blur(8px)',
+          opacity: copied ? 1 : 0,
+          transform: copied ? 'translate(-50%, 0)' : 'translate(-50%, 12px)',
+          pointerEvents: 'none',
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+        링크가 복사되었어요!
+      </div>
 
       {/* ═══ 1. 방 헤더 ═══ */}
       <div className="text-center mb-4 animate-fade-up relative">
@@ -409,7 +425,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             <button
               onClick={async () => {
                 await navigator.clipboard.writeText(window.location.href)
-                alert('링크가 복사되었어요!')
+                showCopied()
                 setShowShareMenu(false)
               }}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-xs btn-bounce mb-3"
@@ -1042,7 +1058,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(window.location.href)
-                  alert('링크가 복사되었어요!')
+                  showCopied()
                 }}
                 className="w-full py-3 rounded-xl text-xs font-bold text-white btn-bounce flex items-center justify-center gap-2"
                 style={{ background: `linear-gradient(135deg, ${test.color}, ${test.color}cc)`, boxShadow: `0 4px 15px ${test.color}20` }}

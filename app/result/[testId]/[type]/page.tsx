@@ -47,6 +47,9 @@ export default function ResultPage({
   const [dislikes, setDislikes] = useState(0)
   const [myReaction, setMyReaction] = useState<string | null>(null)
 
+  const [copied, setCopied] = useState(false)
+  const showCopied = () => { setCopied(true); setTimeout(() => setCopied(false), 2000) }
+
   // 리뷰 작성
   const [reviewNickname, setReviewNickname] = useState('')
   const [reviewText, setReviewText] = useState('')
@@ -149,7 +152,7 @@ export default function ResultPage({
       } catch { /* 사용자가 취소 */ }
     } else {
       await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`)
-      alert('링크가 복사되었어요!')
+      showCopied()
     }
   }
 
@@ -187,7 +190,7 @@ export default function ResultPage({
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(window.location.href)
-    alert('링크가 복사되었어요!')
+    showCopied()
   }
 
   const handleSaveImage = async () => {
@@ -242,6 +245,21 @@ export default function ResultPage({
 
   return (
     <div className="max-w-lg mx-auto pt-8 pb-4">
+      {/* 링크 복사 토스트 */}
+      <div
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-semibold shadow-lg transition-all duration-300"
+        style={{
+          background: 'rgba(30,30,30,0.92)',
+          backdropFilter: 'blur(8px)',
+          opacity: copied ? 1 : 0,
+          transform: copied ? 'translate(-50%, 0)' : 'translate(-50%, 12px)',
+          pointerEvents: 'none',
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+        링크가 복사되었어요!
+      </div>
+
       {/* 결과 카드 */}
       <div className="animate-scale-in">
         <div
