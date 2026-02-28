@@ -688,17 +688,28 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
             className="rounded-2xl p-5 overflow-hidden"
             style={{ background: `${focusResult.color}06`, border: `1px solid ${focusResult.color}20` }}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl overflow-hidden" style={{ background: `${focusResult.color}15` }}>
-                {focusResult.icon ? <img src={focusResult.icon} alt={focusResult.title} className="w-full h-full object-contain" /> : focusResult.emoji}
-              </div>
-              <div className="flex-1">
-                <p className="font-bold text-sm">{focusPerson.nickname}</p>
-                <p className="text-xs" style={{ color: focusResult.color }}>{focusResult.title} · {focusResult.subtitle}</p>
-              </div>
+            {/* 닫기 버튼 */}
+            <div className="flex justify-end mb-3">
               <button onClick={() => setSelectedPerson(null)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'var(--card)' }}>
                 <X size={14} style={{ color: 'var(--muted)' }} />
               </button>
+            </div>
+
+            {/* 결과 이미지 크게 */}
+            {focusResult.icon ? (
+              <div className="w-full rounded-2xl overflow-hidden mb-4">
+                <img src={focusResult.icon} alt={focusResult.title} className="w-full h-auto" style={{ borderRadius: '16px' }} />
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4" style={{ background: `${focusResult.color}15` }}>
+                {focusResult.emoji}
+              </div>
+            )}
+
+            <div className="text-center mb-4">
+              <p className="font-bold text-base">{focusPerson.nickname}</p>
+              <p className="text-sm font-bold" style={{ color: focusResult.color }}>{focusResult.title}</p>
+              <p className="text-xs" style={{ color: 'var(--muted)' }}>{focusResult.subtitle}</p>
             </div>
 
             {/* 결과 보기 버튼 */}
