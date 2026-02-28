@@ -1047,7 +1047,7 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
       <div className="mb-6 animate-fade-up delay-300">
         <p className="text-sm font-bold mb-3">다른 테스트도 해보세요</p>
         <div className="space-y-2.5">
-          {testList.filter(t => t.id !== room.testId).map(t => (
+          {testList.filter(t => t.id !== room.testId).sort(() => Math.random() - 0.5).slice(0, 3).map(t => (
             <Link
               key={t.id}
               href={`/quiz/${t.id}`}
