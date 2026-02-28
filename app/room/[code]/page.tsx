@@ -335,9 +335,9 @@ export default function RoomPage({ params }: { params: Promise<{ code: string }>
       <div className="text-center mb-4 animate-fade-up relative">
         {/* 테스트 아이콘 */}
         {test.icon ? (
-          <img src={test.icon} alt={test.title} className="w-16 h-16 mx-auto mb-3 rounded-2xl object-contain" style={{ background: `${test.color}10` }} />
+          <img src={test.icon} alt={test.title} className="w-full h-auto mx-auto mb-3 rounded-2xl object-contain" style={{ maxWidth: '240px', background: `${test.color}10` }} />
         ) : (
-          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center text-3xl" style={{ background: `${test.color}10` }}>
+          <div className="w-24 h-24 mx-auto mb-3 rounded-2xl flex items-center justify-center text-5xl" style={{ background: `${test.color}10` }}>
             {test.emoji}
           </div>
         )}
