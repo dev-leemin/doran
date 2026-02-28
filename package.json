@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@neondatabase/serverless": "^1.0.2",
+    "@prisma/adapter-neon": "^6.19.2",
     "@prisma/client": "^6.19.2",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.574.0",

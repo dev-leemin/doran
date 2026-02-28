@@ -205,8 +205,8 @@ export default function PlayPage({ params }: { params: Promise<{ testId: string 
 
           <div className="relative">
             {test.icon ? (
-              <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto mb-5 animate-float">
-                <Image src={test.icon} alt={test.title} width={96} height={96} className="w-full h-full object-cover" />
+              <div className="relative w-40 h-40 rounded-3xl overflow-hidden mx-auto mb-5 animate-float">
+                <Image src={test.icon} alt={test.title} fill className="object-cover" />
               </div>
             ) : (
               <div

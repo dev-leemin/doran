@@ -31,13 +31,16 @@ export default function Home() {
   const [recentRooms, setRecentRooms] = useState<SavedRoom[]>([])
 
   useEffect(() => {
-    fetch('/api/stats')
+    const ctrl = new AbortController()
+    const timeout = setTimeout(() => ctrl.abort(), 3000)
+    fetch('/api/stats', { signal: ctrl.signal })
       .then(res => res.json())
       .then(data => {
         setStats(data.stats ?? {})
         setLikes(data.likes ?? {})
       })
       .catch(() => {})
+      .finally(() => clearTimeout(timeout))
 
     // localStorage에서 정렬 모드 복원
     const saved = localStorage.getItem('doran_sort_mode')

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static pages -->
+  <url>
+    <loc>https://doran-orcin.vercel.app</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/privacy</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Quiz pages -->
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/office</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/lunch</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/compatibility</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/animal</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/love</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/travel</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/color</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/stress</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/cafe</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/cooking</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/friendship</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/morning</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/hobby</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/superpower</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://doran-orcin.vercel.app/quiz/fantasy</loc>
+    <lastmod>2026-02-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Result pages: office -->
+  <url><loc>https://doran-orcin.vercel.app/result/office/time-master</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/mood-maker</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/silent-ace</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/passion-worker</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/office-fox</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/leader-type</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/swiss-neutral</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/office/lunch-king</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: lunch -->
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/spicy-explorer</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/food-adventurer</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/health-guru</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/comfort-foodie</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/balance-eater</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/lunch/routine-eater</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: compatibility -->
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/homebody</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/planner</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/trendsetter</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/empath</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/social-butterfly</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/compatibility/old-soul</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: animal -->
+  <url><loc>https://doran-orcin.vercel.app/result/animal/golden-retriever</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/cat</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/fox</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/bear</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/dolphin</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/owl</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/sloth</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/animal/wolf</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: love -->
+  <url><loc>https://doran-orcin.vercel.app/result/love/devoted</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/independent</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/romantic</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/steady</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/push-pull</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/friend-lover</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/tsundere</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/love/adventurer</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: travel -->
+  <url><loc>https://doran-orcin.vercel.app/result/travel/backpacker</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/planner</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/foodie</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/culture</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/resort</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/adventure</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/photo</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/travel/local</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: color -->
+  <url><loc>https://doran-orcin.vercel.app/result/color/red</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/blue</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/yellow</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/green</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/purple</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/orange</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/pink</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/color/white</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: stress -->
+  <url><loc>https://doran-orcin.vercel.app/result/stress/workout</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/foodie</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/socializer</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/sleeper</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/shopper</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/creator</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/nature</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/stress/binge</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: cafe -->
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/americano</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/latte</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/dessert</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/study</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/vibe</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/newbie</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/takeout</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cafe/social</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: cooking -->
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/chef</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/recipe</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/instant</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/baker</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/health</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/experiment</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/delivery</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/cooking/social</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: friendship -->
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/bestie</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/counselor</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/planner</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/mood</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/reliable</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/honest</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/connector</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/friendship/chill</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: morning -->
+  <url><loc>https://doran-orcin.vercel.app/result/morning/early-bird</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/snooze</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/routine</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/workout</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/coffee</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/mindful</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/rush</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/morning/brunch</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: hobby -->
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/sports</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/art</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/game</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/reading</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/outdoor</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/music</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/craft</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/hobby/social</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: superpower -->
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/teleport</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/mind-read</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/time-stop</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/invisible</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/fly</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/heal</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/fire</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/superpower/charm</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- Result pages: fantasy -->
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/warrior</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/mage</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/healer</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/thief</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/ranger</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/bard</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/paladin</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://doran-orcin.vercel.app/result/fantasy/alchemist</loc><lastmod>2026-02-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+</urlset>

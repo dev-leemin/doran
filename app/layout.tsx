@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import Link from "next/link";
 import SessionProvider from "@/components/session-provider";
@@ -11,23 +10,23 @@ import ThemeToggle from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://doran-orcin.vercel.app"),
-  title: "도란도란, 서로를 알아가는 테스트",
-  description: "회사 캐릭터, 점심 매칭, 취향 궁합까지. 혼자도 좋고 같이하면 더 좋은 테스트 모음",
+  title: "도란도란 | 무료 심리테스트 모음",
+  description: "직장인 유형, 연애 스타일, 음식 성격, 동물 MBTI까지! 혼자도 좋고 친구와 함께하면 더 재미있는 무료 심리테스트",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "도란도란",
-    description: "서로를 알아가는 재미있는 테스트 모음. 결과를 공유하고 친구와 궁합을 비교해보세요!",
+    title: "도란도란 | 무료 심리테스트",
+    description: "직장인 유형, 연애 스타일, 음식 성격, 동물 MBTI까지! 친구와 결과를 공유하고 궁합을 비교해보세요.",
     images: ["/logo.png"],
     type: "website",
     siteName: "도란도란",
   },
   twitter: {
     card: "summary",
-    title: "도란도란, 서로를 알아가는 테스트",
-    description: "회사 캐릭터, 점심 매칭, 취향 궁합까지",
+    title: "도란도란 | 무료 심리테스트",
+    description: "직장인 유형, 연애 스타일, 음식 성격, 동물 MBTI 등 다양한 심리테스트",
     images: ["/logo.png"],
   },
 };
@@ -49,14 +48,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
         />
         <meta name="google-adsense-account" content="ca-pub-2632103940068646" />
-      </head>
-      <body className="antialiased min-h-dvh">
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2632103940068646"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
+      </head>
+      <body className="antialiased min-h-dvh">
         <script dangerouslySetInnerHTML={{ __html: `document.addEventListener('dragstart',function(e){e.preventDefault()});try{if(localStorage.getItem('doran_theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}` }} />
         <SessionProvider>
           {/* 배경 데코 */}

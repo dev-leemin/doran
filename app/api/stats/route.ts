@@ -33,7 +33,9 @@ export async function GET() {
       likes[lc.testId] = lc._count
     }
 
-    return NextResponse.json({ stats: result, likes })
+    return NextResponse.json({ stats: result, likes }, {
+      headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300' }
+    })
   } catch (err) {
     console.error('[Stats API] GET error:', err)
     return NextResponse.json(

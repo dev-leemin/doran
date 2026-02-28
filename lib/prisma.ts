@@ -1,17 +1,22 @@
 /**
- * Prisma 클라이언트 싱글톤
+ * Prisma 클라이언트 싱글톤 (Neon Serverless Driver)
  *
- * Next.js의 HMR(Hot Module Replacement) 환경에서
- * 매 리로드마다 새 커넥션이 생기는 걸 방지하기 위해
- * globalThis에 인스턴스를 캐싱한다.
+ * @neondatabase/serverless + @prisma/adapter-neon 조합으로
+ * TCP 대신 WebSocket을 사용해 Neon 콜드 스타트를 최소화한다.
  */
 import { PrismaClient } from '@prisma/client'
+import { PrismaNeon } from '@prisma/adapter-neon'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+function createPrismaClient() {
+  const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! })
+  return new PrismaClient({ adapter })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
