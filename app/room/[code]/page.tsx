@@ -9,24 +9,158 @@ import type { RoomData, ParticipantData } from '@/lib/types/room'
 import { Settings, X, Link2, Share2, UserMinus, Trash2, RefreshCw, Users, ChevronRight, Lock, Unlock, RotateCcw } from 'lucide-react'
 import QRCode from 'qrcode'
 
-/* ── 궁합 점수 → 설명 매핑 ── */
+/* ── 궁합 점수 → 설명 매핑 (9단계) ── */
 function getCompatDescription(score: number) {
-  if (score >= 85) return { icon: '/icons/compat/perfect.png', label: '환상의 케미', description: '서로의 성향이 아주 잘 맞아요! 함께하면 시너지가 폭발할 거예요.', color: '#ec4899', bg: '#fdf2f8' }
-  if (score >= 70) return { icon: '/icons/compat/good.png', label: '좋은 궁합', description: '비슷한 성향이 많아서 편하게 지낼 수 있는 사이예요.', color: '#10b981', bg: '#ecfdf5' }
-  if (score >= 55) return { icon: '/icons/compat/okay.png', label: '무난한 사이', description: '적당한 공통점과 차이점이 있어서 균형 잡힌 관계예요.', color: '#6366f1', bg: '#eef2ff' }
-  if (score >= 40) return { icon: '/icons/compat/diverse.png', label: '다채로운 조합', description: '서로 다른 점이 많지만, 그래서 오히려 배울 점도 많아요.', color: '#f59e0b', bg: '#fffbeb' }
-  return { icon: '/icons/compat/opposite.png', label: '반대의 매력', description: '성향이 많이 다르지만, 그만큼 서로에게 새로운 시각을 줄 수 있어요!', color: '#ef4444', bg: '#fef2f2' }
+  if (score >= 93) return { icon: '/icons/compat/perfect.png', label: '소울메이트', description: '거의 같은 사람! 함께라면 뭐든 잘 될 것 같아요.', color: '#ec4899', bg: '#fdf2f8' }
+  if (score >= 82) return { icon: '/icons/compat/perfect.png', label: '환상의 케미', description: '성향이 아주 잘 맞아요! 함께하면 시너지가 폭발해요.', color: '#db2777', bg: '#fdf2f8' }
+  if (score >= 72) return { icon: '/icons/compat/good.png', label: '티키타카 콤비', description: '대화가 잘 통하고 같이 있으면 편안한 사이예요.', color: '#10b981', bg: '#ecfdf5' }
+  if (score >= 62) return { icon: '/icons/compat/good.png', label: '좋은 궁합', description: '비슷한 면이 많아서 자연스럽게 어울릴 수 있어요.', color: '#059669', bg: '#ecfdf5' }
+  if (score >= 52) return { icon: '/icons/compat/okay.png', label: '무난한 사이', description: '적당한 공통점이 있어서 균형 잡힌 관계예요.', color: '#6366f1', bg: '#eef2ff' }
+  if (score >= 42) return { icon: '/icons/compat/okay.png', label: '중간쯤 어딘가', description: '공통점도 차이점도 있는 독특한 조합이에요.', color: '#8b5cf6', bg: '#f5f3ff' }
+  if (score >= 30) return { icon: '/icons/compat/diverse.png', label: '달라서 재밌어', description: '서로 달라서 오히려 흥미로운 대화가 이어질 수 있어요.', color: '#f59e0b', bg: '#fffbeb' }
+  if (score >= 18) return { icon: '/icons/compat/diverse.png', label: '다채로운 조합', description: '성향 차이가 크지만, 배울 점이 정말 많은 관계예요.', color: '#d97706', bg: '#fffbeb' }
+  return { icon: '/icons/compat/opposite.png', label: '반대의 매력', description: '정반대 성향이지만, 서로에게 새로운 세계를 열어줄 수 있어요!', color: '#ef4444', bg: '#fef2f2' }
 }
 
-/* ── 그룹 점수 → 모임 칭호 ── */
+/* ── 그룹 점수 → 모임 칭호 (9단계) ── */
 function getGroupTitle(avg: number, count: number) {
   if (count <= 1) return { title: '첫 모임', subtitle: '친구를 초대해보세요!', icon: '/icons/group/first.png' }
-  if (avg >= 80) return { title: '찰떡궁합 모임', subtitle: '이 조합 진짜 잘 맞아요!', icon: '/icons/group/perfect.png' }
-  if (avg >= 65) return { title: '케미 넘치는 모임', subtitle: '함께하면 즐거운 관계예요', icon: '/icons/group/chemistry.png' }
-  if (avg >= 50) return { title: '균형 잡힌 모임', subtitle: '다양한 색깔이 공존하는 그룹', icon: '/icons/group/balanced.png' }
-  if (avg >= 35) return { title: '다채로운 모임', subtitle: '서로 다르기에 더 흥미로운 관계', icon: '/icons/group/colorful.png' }
-  return { title: '불꽃 튀는 모임', subtitle: '개성 강한 멤버들의 만남!', icon: '/icons/group/fire.png' }
+  if (avg >= 90) return { title: '소울메이트 모임', subtitle: '이 조합... 실화예요?! 완벽해요!', icon: '/icons/group/perfect.png' }
+  if (avg >= 78) return { title: '찰떡궁합 모임', subtitle: '진짜 잘 맞는 조합이에요!', icon: '/icons/group/perfect.png' }
+  if (avg >= 68) return { title: '케미폭발 모임', subtitle: '함께라면 무적! 시너지 넘치는 그룹', icon: '/icons/group/chemistry.png' }
+  if (avg >= 57) return { title: '케미 있는 모임', subtitle: '함께하면 편안하고 즐거운 관계예요', icon: '/icons/group/chemistry.png' }
+  if (avg >= 46) return { title: '균형 잡힌 모임', subtitle: '다양한 색깔이 조화롭게 공존해요', icon: '/icons/group/balanced.png' }
+  if (avg >= 35) return { title: '다채로운 모임', subtitle: '서로 다르기에 더 흥미로운 관계예요', icon: '/icons/group/colorful.png' }
+  if (avg >= 22) return { title: '개성파 모임', subtitle: '각양각색! 매력이 넘치는 그룹이에요', icon: '/icons/group/colorful.png' }
+  return { title: '불꽃 튀는 모임', subtitle: '강렬한 개성들의 만남, 흥미진진해요!', icon: '/icons/group/fire.png' }
 }
+
+/* ── 문자열 해시 (결정론적 랜덤 인덱스 추출) ── */
+function strHash(s: string) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0
+  return Math.abs(h)
+}
+function pick<T>(arr: T[], key: string): T { return arr[strHash(key) % arr.length] }
+
+/* ── 축별 비슷/다름 설명 문구 풀 ── */
+const SIMILAR_POOL: Record<string, string[]> = {
+  introvert: [
+    '둘 다 혼자만의 시간을 소중히 해요. 서로의 공간을 자연스럽게 배려할 수 있어요.',
+    '에너지 충전 방식이 비슷해서 함께 있어도 편하고, 각자 시간도 이해해줄 수 있어요.',
+    '내향/외향 성향이 비슷해서 같이 있으면 자연스럽게 호흡이 맞아요.',
+  ],
+  social: [
+    '사람을 대하는 방식이 비슷해요! 처음 만나도 어색하지 않을 것 같아요.',
+    '사교성이 비슷해서 어떤 자리에서든 잘 맞을 것 같아요.',
+    '사람과 어울리는 방식이 닮아서 함께라면 어디서든 편안해요.',
+  ],
+  planner: [
+    '계획 세우는 스타일이 잘 맞아요! 함께하는 약속도 척척 맞출 수 있어요.',
+    '즉흥 vs 계획 성향이 비슷해서 일정 조율이 자연스러워요.',
+    '둘 다 비슷한 방식으로 일을 처리해서 함께라면 효율적이에요.',
+  ],
+  emotional: [
+    '감성 코드가 잘 맞아요. 같은 게 감동이고 같은 게 재밌어요.',
+    '감수성이 비슷해서 공감대 형성이 쉬운 관계예요.',
+    '이성적/감성적 균형이 비슷해서 대화가 편안해요.',
+  ],
+  trendy: [
+    '취향이 비슷해서 대화가 잘 통할 것 같아요.',
+    '트렌드나 관심사가 비슷해서 같이 이야기하면 시간 가는 줄 모를 것 같아요.',
+    '좋아하는 것들이 겹쳐서 같이 즐길 수 있는 것들이 많아요.',
+  ],
+  adventure: [
+    '모험과 새로움을 즐기는 정도가 비슷해요. 함께 도전해봐요!',
+    '새로운 걸 시도하는 태도가 비슷해서 같이 무언가 해보고 싶어져요.',
+    '모험심 수준이 비슷해서 여행이나 활동을 함께하면 잘 맞을 것 같아요.',
+  ],
+  efficiency: [
+    '일 처리 방식이 잘 맞아요. 같이 뭔가 하면 효율적일 것 같아요.',
+    '효율을 중시하는 정도가 비슷해서 함께 일하면 호흡이 맞아요.',
+    '목표를 향해 달려가는 방식이 비슷해요.',
+  ],
+  initiative: [
+    '주도적인 성향이 비슷해서 자연스럽게 호흡이 맞아요.',
+    '리더십 성향이 비슷해서 함께 뭔가를 이끌어나갈 수 있어요.',
+    '주도하는 스타일이 비슷해서 역할 분담이 자연스러워요.',
+  ],
+  passion: [
+    '열정의 온도가 비슷해요! 함께하면 에너지가 넘쳐요.',
+    '무언가를 향한 열정 수준이 비슷해서 서로 동기부여가 돼요.',
+    '에너지 레벨이 비슷해서 함께라면 힘이 나요.',
+  ],
+  spicy: ['자극적인 것에 대한 취향이 비슷해요.', '짜릿함을 즐기는 정도가 비슷해서 재밌는 시간을 만들 수 있어요.'],
+  health: ['건강과 생활 습관에 대한 가치관이 잘 맞아요.', '건강을 챙기는 방식이 비슷해서 함께 좋은 습관을 만들 수 있어요.'],
+  mood: ['즉흥/계획 성향이 비슷해서 함께 있으면 편해요.', '기분을 다루는 방식이 비슷해서 서로 이해하기 쉬워요.'],
+  strength: ['추진력과 에너지가 비슷해서 함께라면 든든해요.', '체력과 추진력이 비슷해서 함께 무언가를 해낼 수 있어요.'],
+  intelligence: ['지적 호기심의 방향이 잘 맞아요. 대화가 깊어질 것 같아요.', '배우고 싶은 것들의 방향이 비슷해서 서로 자극이 돼요.'],
+  charisma: ['카리스마 에너지가 비슷해서 자연스러운 케미가 생겨요.', '존재감과 매력을 발산하는 방식이 비슷해요.'],
+  agility: ['반응 속도와 유연성이 비슷해서 박자가 잘 맞아요.', '상황에 적응하는 방식이 비슷해서 함께 있으면 편안해요.'],
+}
+const DIFFERENT_POOL: Record<string, string[]> = {
+  introvert: [
+    '내향/외향 성향 차이가 있지만, 서로의 페이스를 배워가며 더 성장할 수 있어요.',
+    '에너지 충전 방식이 달라서 오히려 서로에게 새로운 자극이 될 수 있어요.',
+    '한 명은 더 내향적, 한 명은 더 외향적! 서로의 세계를 넓혀줄 수 있어요.',
+  ],
+  social: [
+    '사람을 대하는 방식이 달라서 서로에게 배울 점이 많아요.',
+    '사교성 차이가 있지만, 서로의 강점을 보완하는 조합이에요.',
+    '한 명이 더 활발할 수 있지만, 그 덕분에 서로 균형이 잡혀요.',
+  ],
+  planner: [
+    '한 명은 즉흥파, 한 명은 계획파! 서로의 약점을 보완하는 조합이에요.',
+    '계획 스타일이 달라서 때로는 조율이 필요하지만, 그 과정에서 서로를 이해하게 돼요.',
+    '즉흥과 계획의 만남! 함께라면 유연하면서도 체계적인 균형이 생겨요.',
+  ],
+  emotional: [
+    '한 명은 이성적, 한 명은 감성적! 균형이 잡히는 조합이에요.',
+    '감수성 차이가 있어서 서로 다른 시각으로 세상을 볼 수 있어요.',
+    '감성 표현 방식이 달라서 서로에게 새로운 감정을 발견하게 해줄 수 있어요.',
+  ],
+  trendy: [
+    '관심사가 달라서 서로 새로운 세계를 소개해줄 수 있어요.',
+    '취향 차이 덕분에 함께하면 늘 새로운 것을 발견할 수 있어요.',
+    '서로 다른 트렌드를 공유하면서 시야가 넓어지는 관계예요.',
+  ],
+  adventure: [
+    '모험 욕구 차이로 서로에게 적절한 자극과 안정을 줄 수 있어요.',
+    '한 명은 더 모험적, 한 명은 더 안정적! 서로 균형을 잡아줄 수 있어요.',
+    '도전 성향 차이가 있어서 서로에게 적절한 자극이 될 수 있어요.',
+  ],
+  efficiency: [
+    '일 처리 스타일이 달라서 서로의 장점을 배울 수 있는 관계예요.',
+    '효율을 추구하는 방식이 달라서 함께하면 다양한 관점을 얻을 수 있어요.',
+    '일하는 방식 차이가 오히려 다양한 아이디어를 만들어낼 수 있어요.',
+  ],
+  initiative: [
+    '리더십 성향 차이로 역할이 자연스럽게 나뉠 수 있어요.',
+    '주도성 차이가 있어서 서로 자연스럽게 역할을 맡게 될 수 있어요.',
+    '한 명이 이끌고 한 명이 서포트하는 케미가 생길 수 있어요.',
+  ],
+  passion: [
+    '열정 표현 방식이 달라서 서로에게 새로운 자극이 돼요.',
+    '에너지 수준 차이가 있어서 서로 페이스를 조율하며 균형을 잡을 수 있어요.',
+    '열정의 온도 차이가 오히려 흥미로운 조합을 만들어요.',
+  ],
+  spicy: ['자극에 대한 반응이 달라서 서로 새로운 경험을 줄 수 있어요.', '자극 수준이 달라서 서로에게 적절한 자극과 안정감을 줄 수 있어요.'],
+  health: ['생활 습관이 달라서 서로에게 좋은 영향을 줄 수 있어요.', '건강을 챙기는 방식이 달라서 서로의 루틴에서 배울 점이 생겨요.'],
+  mood: ['기분파 성향 차이로 둘이 있으면 자연스럽게 균형이 잡혀요.', '즉흥/계획 차이가 있어서 서로를 보완해주는 관계예요.'],
+  strength: ['추진력 차이가 있지만, 서로의 강점을 살릴 수 있어요.', '에너지 수준이 달라서 서로의 속도를 배려하며 함께할 수 있어요.'],
+  intelligence: ['지적 호기심의 방향이 달라서 다양한 주제로 이야기할 수 있어요.', '배움의 방향이 달라서 서로에게 새로운 지식을 나눌 수 있어요.'],
+  charisma: ['카리스마 차이가 오히려 자연스러운 케미를 만들어요.', '존재감이 다른 만큼, 서로를 더 돋보이게 해주는 조합이에요.'],
+  agility: ['유연성 차이가 있어서 서로의 부족한 점을 채워줄 수 있어요.', '적응 방식이 달라서 다양한 상황에서 서로 도움이 될 수 있어요.'],
+}
+
+const SCORE_PHRASES = [
+  { min: 90, pool: (a: string, b: string) => [`${a}님과 ${b}님은 거의 같은 성향! 소울메이트 조합이에요.`, `이 조합 실화인가요? ${a}님과 ${b}님은 정말 잘 맞아요!`, `${a}님과 ${b}님, 이렇게 잘 맞는 사이가 또 있을까요?`] },
+  { min: 75, pool: (a: string, b: string) => [`${a}님과 ${b}님은 대화가 정말 잘 통할 것 같아요!`, `${a}님과 ${b}님이 함께라면 시너지가 폭발해요.`, `${a}님과 ${b}님, 함께하면 서로 든든한 사이가 될 수 있어요!`] },
+  { min: 60, pool: (a: string, b: string) => [`${a}님과 ${b}님은 편안하게 어울릴 수 있는 사이예요.`, `${a}님과 ${b}님은 자연스럽게 어울릴 수 있는 조합이에요.`, `함께하면 편안한 분위기가 만들어지는 관계예요.`] },
+  { min: 45, pool: (_a: string, _b: string) => ['서로의 다른 점을 인정하면 더 깊은 관계가 될 수 있어요.', '공통점을 찾아가는 과정이 더 흥미로울 것 같아요.', '서로 다른 매력이 있어서 알아갈수록 새로운 면을 발견할 수 있어요.'] },
+  { min: 28, pool: (_a: string, _b: string) => ['정반대 매력으로 서로에게 새로운 자극이 되는 관계예요!', '달라서 오히려 더 흥미로운 케미가 생길 수 있어요.', '차이가 클수록 서로에게 더 많은 걸 배울 수 있는 관계예요.'] },
+  { min: 0, pool: (_a: string, _b: string) => ['오히려 다름이 장점! 서로를 통해 많이 성장할 수 있는 관계예요.', '완전히 다른 성향이지만, 그래서 더 특별한 조합이에요!', '이렇게 다른 두 사람이 만나다니! 서로에게 신선한 충격이 될 거예요.'] },
+]
 
 /* ── 1:1 궁합 상세 텍스트 생성 ── */
 function getDetailedCompat(
@@ -36,7 +170,7 @@ function getDetailedCompat(
   score: number,
 ) {
   const lines: string[] = []
-  // 가장 비슷한 축, 가장 다른 축
+  const key = nameA + nameB + score
   let minDiff = Infinity, maxDiff = 0
   let similarAxis = '', differentAxis = ''
   axes.forEach(axis => {
@@ -44,19 +178,19 @@ function getDetailedCompat(
     if (diff < minDiff) { minDiff = diff; similarAxis = axis }
     if (diff > maxDiff) { maxDiff = diff; differentAxis = axis }
   })
+
   if (similarAxis) {
-    lines.push(`${axisLabels[similarAxis] || similarAxis} 성향이 가장 비슷해요.`)
+    const pool = SIMILAR_POOL[similarAxis]
+    lines.push(pool ? pick(pool, key + 'sim') : `${axisLabels[similarAxis] || similarAxis} 성향이 가장 비슷해요.`)
   }
-  if (differentAxis && differentAxis !== similarAxis) {
-    lines.push(`${axisLabels[differentAxis] || differentAxis} 성향은 서로 달라서 새로운 시각을 줄 수 있어요.`)
+  if (differentAxis && differentAxis !== similarAxis && maxDiff > 2) {
+    const pool = DIFFERENT_POOL[differentAxis]
+    lines.push(pool ? pick(pool, key + 'diff') : `${axisLabels[differentAxis] || differentAxis} 성향 차이가 있어서 서로 새로운 시각을 줄 수 있어요.`)
   }
-  if (score >= 70) {
-    lines.push(`${nameA}님과 ${nameB}님은 함께하면 편안한 사이가 될 수 있어요!`)
-  } else if (score >= 50) {
-    lines.push(`서로의 다른 점을 인정하면 더 좋은 관계가 될 수 있어요.`)
-  } else {
-    lines.push(`정반대라 오히려 서로에게 배울 점이 많은 관계예요!`)
-  }
+
+  const tier = SCORE_PHRASES.find(t => score >= t.min) ?? SCORE_PHRASES[SCORE_PHRASES.length - 1]
+  lines.push(pick(tier.pool(nameA, nameB), key + 'score'))
+
   return lines
 }
 
