@@ -4,7 +4,7 @@ import { use, useMemo, useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { getTest, getResult } from '@/lib/tests'
+import { getTest, getResult, testList } from '@/lib/tests'
 import { saveTestResult, saveRoomParticipation } from '@/lib/history'
 import { Share2, Link2, Users, Camera, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
 import html2canvas from 'html2canvas'
@@ -61,6 +61,13 @@ export default function ResultPage({
       return {}
     }
   }, [searchParams])
+
+  const otherTests = useMemo(() => {
+    return testList
+      .filter(t => t.id !== testId)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+  }, [testId])
 
   // 세션 로드 후 닉네임 자동 채우기
   useEffect(() => {
@@ -266,7 +273,7 @@ export default function ResultPage({
 
             {/* 결과 이미지 — 크게 */}
             {result.icon ? (
-              <div className="relative w-full rounded-2xl overflow-hidden mb-5 mx-auto" style={{ maxWidth: '280px' }}>
+              <div className="relative w-full rounded-2xl overflow-hidden mb-5 mx-auto">
                 <img
                   src={result.icon}
                   alt={result.title}
@@ -588,8 +595,37 @@ export default function ResultPage({
           className="block w-full py-3.5 rounded-2xl text-center text-sm"
           style={{ color: 'var(--muted)' }}
         >
-          다른 테스트 하러가기 →
+          전체 테스트 보러가기 →
         </Link>
+      </div>
+
+      {/* 다른 테스트 추천 */}
+      <div className="mt-8 animate-fade-up delay-500">
+        <p className="text-xs font-medium mb-3 px-1" style={{ color: 'var(--muted)' }}>다른 테스트도 해보세요</p>
+        <div className="space-y-2">
+          {otherTests.map(t => (
+            <Link
+              key={t.id}
+              href={`/quiz/${t.id}`}
+              className="flex items-center gap-3 p-3.5 rounded-2xl transition-all btn-bounce"
+              style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+            >
+              {t.icon ? (
+                <img src={t.icon} alt={t.title} className="w-10 h-10 rounded-xl object-cover shrink-0" />
+              ) : (
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+                  style={{ background: 'var(--bg)' }}>
+                  {t.emoji}
+                </div>
+              )}
+              <div className="text-left min-w-0">
+                <p className="text-sm font-medium truncate">{t.title}</p>
+                <p className="text-[11px] truncate" style={{ color: 'var(--muted)' }}>{t.description}</p>
+              </div>
+              <span className="text-xs shrink-0" style={{ color: 'var(--muted)' }}>→</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )
