@@ -12,9 +12,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://doran-orcin.vercel.app"),
   title: "도란도란 | 무료 심리테스트 모음",
   description: "직장인 유형, 연애 스타일, 음식 성격, 동물 MBTI까지! 혼자도 좋고 친구와 함께하면 더 재미있는 무료 심리테스트",
+  keywords: ["심리테스트", "무료 심리테스트", "성격 테스트", "MBTI", "연애 테스트", "직장인 유형", "궁합 테스트", "음식 성격", "동물 MBTI", "도란도란"],
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
+  },
+  alternates: {
+    canonical: "/",
   },
   openGraph: {
     title: "도란도란 | 무료 심리테스트",
@@ -22,6 +26,7 @@ export const metadata: Metadata = {
     images: ["/logo.png"],
     type: "website",
     siteName: "도란도란",
+    locale: "ko_KR",
   },
   twitter: {
     card: "summary",
@@ -52,6 +57,27 @@ export default function RootLayout({
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2632103940068646"
           crossOrigin="anonymous"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "도란도란",
+              "url": "https://doran-orcin.vercel.app",
+              "description": "직장인 유형, 연애 스타일, 음식 성격, 동물 MBTI까지! 혼자도 좋고 친구와 함께하면 더 재미있는 무료 심리테스트",
+              "inLanguage": "ko",
+              "publisher": {
+                "@type": "Organization",
+                "name": "도란도란",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://doran-orcin.vercel.app/logo.png"
+                }
+              }
+            })
+          }}
         />
       </head>
       <body className="antialiased min-h-dvh">

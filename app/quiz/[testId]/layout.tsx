@@ -13,6 +13,9 @@ export async function generateMetadata(
   return {
     title: `${test.title} | 도란도란`,
     description: test.description,
+    alternates: {
+      canonical: `/quiz/${testId}`,
+    },
     openGraph: {
       title: `${test.title} | 도란도란`,
       description: test.description,
@@ -28,6 +31,40 @@ export async function generateMetadata(
   }
 }
 
-export default function TestLayout({ children }: { children: React.ReactNode }) {
-  return children
+export default async function TestLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Promise<{ testId: string }>
+}) {
+  const { testId } = await params
+  const test = getTest(testId)
+
+  return (
+    <>
+      {test && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Quiz",
+              "name": test.title,
+              "description": test.description,
+              "url": `https://doran-orcin.vercel.app/quiz/${testId}`,
+              "inLanguage": "ko",
+              "isAccessibleForFree": true,
+              "provider": {
+                "@type": "Organization",
+                "name": "도란도란",
+                "url": "https://doran-orcin.vercel.app"
+              }
+            })
+          }}
+        />
+      )}
+      {children}
+    </>
+  )
 }

@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /generated/
 
 Sitemap: https://doran-orcin.vercel.app/sitemap.xml

@@ -16,6 +16,9 @@ export async function generateMetadata(
   return {
     title,
     description,
+    alternates: {
+      canonical: `/result/${testId}/${type}`,
+    },
     openGraph: {
       title,
       description,
@@ -31,6 +34,45 @@ export async function generateMetadata(
   }
 }
 
-export default function ResultLayout({ children }: { children: React.ReactNode }) {
-  return children
+export default async function ResultLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Promise<{ testId: string; type: string }>
+}) {
+  const { testId, type } = await params
+  const test = getTest(testId)
+  const result = getResult(testId, type)
+
+  return (
+    <>
+      {test && result && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CreativeWork",
+              "name": `${result.title} - ${test.title}`,
+              "description": result.description,
+              "url": `https://doran-orcin.vercel.app/result/${testId}/${type}`,
+              "inLanguage": "ko",
+              "isPartOf": {
+                "@type": "Quiz",
+                "name": test.title,
+                "url": `https://doran-orcin.vercel.app/quiz/${testId}`
+              },
+              "provider": {
+                "@type": "Organization",
+                "name": "도란도란",
+                "url": "https://doran-orcin.vercel.app"
+              }
+            })
+          }}
+        />
+      )}
+      {children}
+    </>
+  )
 }
